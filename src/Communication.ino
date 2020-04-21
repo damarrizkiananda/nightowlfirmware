@@ -1,3 +1,6 @@
+
+#define USE_EXTRA_PROTOCOL
+
 //** serial comm
 void encode_data(){
   // this is where to encode the data received, like the receive event in i2c
@@ -50,7 +53,9 @@ void serial_receive(){
 void serial_send_packets(uint8_t* data, byte len){
   Serial.write(SERIAL_HEAD);
   for(int i = 0; i < len; i++){
+    #ifdef USE_EXTRA_PROTOCOL
     if(data[i]==SERIAL_HEAD||data[i]==SERIAL_TAIL)data[i]++;
+    #endif
     Serial.write(data[i]+1);
   }
   Serial.write(SERIAL_TAIL);
@@ -58,7 +63,9 @@ void serial_send_packets(uint8_t* data, byte len){
 void serial_send_packets(int16_t* data, byte len){
   Serial.write(SERIAL_HEAD);
   for(int i = 0; i < len; i++){
+    #ifdef USE_EXTRA_PROTOCOL
     if(data[i]==SERIAL_HEAD||data[i]==SERIAL_TAIL)data[i]++;
+    #endif
     serial_send(data[i]);
   }
   Serial.write(SERIAL_TAIL);
@@ -66,7 +73,9 @@ void serial_send_packets(int16_t* data, byte len){
 void serial_send_packets(int32_t* data, byte len){
   Serial.write(SERIAL_HEAD);
   for(int i = 0; i < len; i++){
+    #ifdef USE_EXTRA_PROTOCOL
     if(data[i]==SERIAL_HEAD||data[i]==SERIAL_TAIL)data[i]++;
+    #endif
     serial_send(data[i]+1);
   }
   Serial.write(SERIAL_TAIL);

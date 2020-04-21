@@ -1,3 +1,6 @@
+
+#define USE_EXTRA_PROTOCOL
+
 //** bluetooth comm
 void bluetooth_encode_data(){
   // this is where to encode the data received, like the receive event in i2c
@@ -37,7 +40,9 @@ void bluetooth_receive(){
 void bluetooth_send_packets(uint8_t* data, byte len){
   BLUETOOTH_SERIAL.write(BLUETOOTH_HEAD);
   for(int i = 0; i < len; i++){
+    #ifdef USE_EXTRA_PROTOCOL
     if(data[i]==BLUETOOTH_HEAD||data[i]==BLUETOOTH_TAIL)data[i]++;
+    #endif
     BLUETOOTH_SERIAL.write(data[i]);
   }
   BLUETOOTH_SERIAL.write(BLUETOOTH_TAIL);
@@ -45,7 +50,9 @@ void bluetooth_send_packets(uint8_t* data, byte len){
 void bluetooth_send_packets(int16_t* data, byte len){
   BLUETOOTH_SERIAL.write(BLUETOOTH_HEAD);
   for(int i = 0; i < len; i++){
+    #ifdef USE_EXTRA_PROTOCOL
     if(data[i]==BLUETOOTH_HEAD||data[i]==BLUETOOTH_TAIL)data[i]++;
+    #endif
     bluetooth_send(data[i]);
   }
   BLUETOOTH_SERIAL.write(BLUETOOTH_TAIL);
@@ -53,7 +60,9 @@ void bluetooth_send_packets(int16_t* data, byte len){
 void bluetooth_send_packets(int32_t* data, byte len){
   BLUETOOTH_SERIAL.write(BLUETOOTH_HEAD);
   for(int i = 0; i < len; i++){
+    #ifdef USE_EXTRA_PROTOCOL
     if(data[i]==BLUETOOTH_HEAD||data[i]==BLUETOOTH_TAIL)data[i]++;
+    #endif
     bluetooth_send(data[i]);
   }
   BLUETOOTH_SERIAL.write(BLUETOOTH_TAIL);
