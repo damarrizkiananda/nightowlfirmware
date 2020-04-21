@@ -118,7 +118,7 @@ PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta
 
 void setup() 
 {
-  /* Initialise the sensor */
+  /* Initialise the BNO055 */
   if (!bno.begin())
   {
     /* There was a problem detecting the BNO055 ... check your connections */
