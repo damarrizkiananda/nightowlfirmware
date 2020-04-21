@@ -89,7 +89,6 @@ void vibeCheck()
   //Serial.print(" YAW:");   Serial.println(yaw);
 
   //delay(10);
-  //delay(10);
 }
 
 /* Use this main if Teensy is the main hardware controller */
