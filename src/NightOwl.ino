@@ -1,19 +1,10 @@
-/* Already Available Library */
 #include <Wire.h>
-
-/* Independent Install */
 #include <Adafruit_Sensor.h>
-
-/* Included in lib */
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
-
-/* Included in Teensy */
+#include <PID_v1.h>
 #include <FlexiTimer2.h>
 #include <Encoder.h>
-
-/* Independent Install */
-#include <PID_v1.h>
 
 Encoder enc1(10, 9);
 Encoder enc3(11, 12);
