@@ -1,4 +1,9 @@
 
+const byte filterVal = 15;
+int filteredPwm1, filteredPwmPrev1;
+int filteredPwm2, filteredPwmPrev2;
+int filteredPwm3, filteredPwmPrev3;
+
 void NightOwlMain()
 {
   /* Send data every 100ms */
@@ -22,7 +27,17 @@ void NightOwlMain()
   else if(robotState == MOVING)
   {
     serial_receive();
-    robotMotorWrite(pwm1, pwm2, pwm3); 
+
+    filteredPwm1 = filter(filteredPwmPrev1, pwm1, filterVal);
+    filteredPwmPrev1 = filteredPwm1;
+
+    filteredPwm2 = filter(filteredPwmPrev2, pwm2, filterVal);
+    filteredPwmPrev2 = filteredPwm2;
+
+    filteredPwm3 = filter(filteredPwmPrev3, pwm3, filterVal);
+    filteredPwmPrev3 = filteredPwm3;
+
+    robotMotorWrite(filteredPwm1, filteredPwm2, filteredPwm3); 
 
     if(arrived)
     {

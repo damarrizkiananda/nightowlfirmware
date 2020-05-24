@@ -81,6 +81,7 @@ void bluetooth_send( int32_t data){
 
 void send_to_tablet()
 {
-  
+  uint8_t data[1] = {(uint8_t)(1)};
+  bluetooth_send_packets(data, 1);
 }
 
