@@ -39,11 +39,11 @@ void NightOwlMain()
 
     robotMotorWrite(filteredPwm1, filteredPwm2, filteredPwm3); 
 
-    if(arrived)
-    {
-      send_to_tablet();
-      robotState = WAITING_FOR_NEW_DESTINATION;
-    }
+    // if(arrived)
+    // {
+    //   send_to_tablet();
+    //   robotState = WAITING_FOR_NEW_DESTINATION;
+    // }
   }
 }
 
@@ -147,36 +147,70 @@ void odometryCheck()
   }
 }
 
-int bluetoothX, bluetoothY, bluetoothO, btime, go;
-unsigned long bc;
+#define STATE_GO 0
+#define STATE_WAIT 1
+#define STATE_SEND_DATA 2
+
+int bluetoothX, bluetoothY, bluetoothO;
+bool go = false;
+unsigned long bc, btime;
+int state = STATE_WAIT;
 
 void mainMain()
 {
-  if(BLUETOOTH_SERIAL.available())
+  if(sendDataPlease)
   {
-    bluetoothX = BLUETOOTH_SERIAL.parseInt();
-    bluetoothY = BLUETOOTH_SERIAL.parseInt();
-    bluetoothO = BLUETOOTH_SERIAL.parseInt();
-    btime = BLUETOOTH_SERIAL.parseInt();
-    bc = millis();
-    go = true;
-  }
-
-  if(go)
-  {
-    inverseKinematics(bluetoothX, bluetoothY, bluetoothO);
-    
-    /* Without motor speed control */
-    robotMotorWrite(pwm1,pwm2,pwm3);
-    //delay(1000);
-    if(millis()-bc>btime)
-    {
-      robotMotorWrite(0,0,0);
-      go = false;
-      //bc = millis(); 
-    }
+    getYawDeg();
+    sendDataPlease = false;
   }
   
+  if(state==STATE_WAIT)
+  {
+    if(BLUETOOTH_SERIAL.available())
+    {
+      bluetoothX = BLUETOOTH_SERIAL.parseInt();
+      bluetoothY = BLUETOOTH_SERIAL.parseInt();
+      bluetoothO = BLUETOOTH_SERIAL.parseInt();
+      btime = BLUETOOTH_SERIAL.parseInt();
+      //bc = millis();
+      state = STATE_GO;
+    }
+
+  // if(Serial.available())
+  // {
+  //   bluetoothX = Serial.parseInt();
+  //   bluetoothY = Serial.parseInt();
+  //   bluetoothO = Serial.parseInt();
+  //   btime = Serial.parseInt();
+  //   bc = millis();
+  //   go = true;
+  // }
+  }
+  else if (state==STATE_GO)
+  {
+    inverseKinematics(bluetoothX, bluetoothY, bluetoothO);
+
+    /* Without motor speed control */
+    //robotMotorWrite(pwm1,pwm2,pwm3);, 
+
+    motorPID(pwm1, pwm2, pwm3);
+    
+  
+    if(x>btime)
+    {
+      Serial.println("Time Ex");
+      robotMotorWrite(0,0,0);
+      go = false;
+      state = STATE_SEND_DATA; 
+    }
+  }
+  else if(state==STATE_SEND_DATA)
+  {
+    Serial.print(" x:"); Serial.print(x);
+    Serial.print(" y:"); Serial.print(y);
+    Serial.print(" yaw:"); Serial.print(yaw);
+    state = STATE_WAIT;
+  }
 }
 
 int inverseX, inverseY, inverseO;

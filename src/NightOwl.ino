@@ -36,7 +36,7 @@ uint8_t bluetooth_buffer[16];
 
 unsigned long now = 0;
 
-char input[4];
+//char input[4];
 
 #define MOTOR_1_A_PIN 3 
 #define MOTOR_1_B_PIN 4
@@ -123,10 +123,10 @@ void setup()
     while (1);
   }
   
-  pinMode(IR_1_PIN, INPUT_PULLUP);
-  pinMode(IR_2_PIN, INPUT_PULLUP);
-  pinMode(IR_3_PIN, INPUT_PULLUP);
-  pinMode(IR_4_PIN, INPUT_PULLUP);
+  pinMode(IR_1_PIN, INPUT);
+  pinMode(IR_2_PIN, INPUT);
+  pinMode(IR_3_PIN, INPUT);
+  pinMode(IR_4_PIN, INPUT);
   
   pinMode(13, OUTPUT);
   digitalWrite(13, 1);
@@ -137,7 +137,7 @@ void setup()
   Serial.begin(115200);
   Serial.setTimeout(100);
 
-  FlexiTimer2::set(50, 1.0/1000, update_speed); // call every 100 1ms "ticks"
+  FlexiTimer2::set(100, 1.0/1000, update_speed); // call every 100 1ms "ticks"
   // FlexiTimer2::set(500, flash); // MsTimer2 style is also supported
   FlexiTimer2::start();
 
@@ -155,12 +155,14 @@ void setup()
 
 void loop() 
 {
-  NightOwlMain();
+  // Serial.println(IR_READ,BIN);
+  // delay(500);
+  //NightOwlMain();
 //  vibeCheck();
 //  bluetoothCheck();
 //  timerCheck();
-//  odometryCheck();
+ // odometryCheck();
 //  inverseCheck();
-//  mainMain();
+mainMain();
 //  delay(10);
 }
