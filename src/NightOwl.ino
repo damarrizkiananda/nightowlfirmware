@@ -134,7 +134,7 @@ void setup()
   Serial.begin(115200);
   Serial.setTimeout(100);
 
-  FlexiTimer2::set(100, 1.0/1000, update_speed); // call every 100 1ms "ticks"
+  FlexiTimer2::set(100, 1.0/1000, updateSpeedAndPosition); // call every 100 1ms "ticks"
   // FlexiTimer2::set(500, flash); // MsTimer2 style is also supported
   FlexiTimer2::start();
 

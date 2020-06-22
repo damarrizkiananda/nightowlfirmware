@@ -1,6 +1,6 @@
 signed long lastPulse1, lastPulse2, lastPulse3;
 
-void update_speed()
+void updateSpeedAndPosition()
 {
   encoderPulseDif1 = (int32_t)(enc1.read()/4-lastPulse1);
   encoderPulseDif2 = (int32_t)(enc2.read()/4-lastPulse2);
@@ -15,6 +15,10 @@ void update_speed()
   wheelSpeed3_Real = encoderPulseDif3;
 
   getPosition();
+
+  robotSpeedX_Real = 0;
+  robotSpeedY_Real = 0;
+  robotOmega_Real  = 0;
 
   sendDataPlease = true;
 }
