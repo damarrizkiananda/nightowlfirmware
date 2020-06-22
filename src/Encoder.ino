@@ -1,4 +1,5 @@
 signed long lastPulse1, lastPulse2, lastPulse3;
+int lastX, lastY, lastYaw;
 
 void updateSpeedAndPosition()
 {
@@ -14,11 +15,16 @@ void updateSpeedAndPosition()
   wheelSpeed2_Real = encoderPulseDif2;
   wheelSpeed3_Real = encoderPulseDif3;
 
+  getYawDeg();
   getPosition();
 
-  robotSpeedX_Real = 0;
-  robotSpeedY_Real = 0;
-  robotOmega_Real  = 0;
+  robotSpeedX_Real = x-lastX;
+  robotSpeedY_Real = y-lastY;
+  robotOmega_Real  = yaw-lastYaw;
+
+  lastX = x;
+  lastY = y;
+  lastYaw = yaw;
 
   sendDataPlease = true;
 }
@@ -38,6 +44,3 @@ void getPosition()
   x = (int)(x_count * DIST_PER_PULSE);
   y = (int)(y_count * DIST_PER_PULSE);
 }
-
-
-

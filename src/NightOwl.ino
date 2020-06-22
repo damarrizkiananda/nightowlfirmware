@@ -24,8 +24,10 @@ int x,y;
 float robotSpeedX_Target, robotSpeedY_Target, robotOmega_Target;
 float robotSpeedX_Real, robotSpeedY_Real, robotOmega_Real;
 
+#define TIMER_INTERRUPT_PERIOD 100
+
 /* Set the delay between fresh samples */
-uint16_t BNO055_SAMPLERATE_DELAY_MS = 100;
+uint16_t BNO055_SAMPLERATE_DELAY_MS = 10;
 Adafruit_BNO055 bno = Adafruit_BNO055(55,0x29,&Wire);
 sensors_event_t orientationData;
 double yaw;
@@ -134,7 +136,7 @@ void setup()
   Serial.begin(115200);
   Serial.setTimeout(100);
 
-  FlexiTimer2::set(100, 1.0/1000, updateSpeedAndPosition); // call every 100 1ms "ticks"
+  FlexiTimer2::set(TIMER_INTERRUPT_PERIOD, 1.0/1000, updateSpeedAndPosition); // call every 100 1ms "ticks"
   // FlexiTimer2::set(500, flash); // MsTimer2 style is also supported
   FlexiTimer2::start();
 
