@@ -6,6 +6,11 @@ int filteredPwm3, filteredPwmPrev3;
 
 void NightOwlMain()
 {
+
+}
+
+void NightOwlMainOld()
+{
   /* Send data every 100ms */
   if(sendDataPlease)
   {
@@ -26,18 +31,18 @@ void NightOwlMain()
   }
   else if(robotState == MOVING)
   {
-    serial_receive();
+    // serial_receive();
 
-    filteredPwm1 = filter(filteredPwmPrev1, pwm1, filterVal);
-    filteredPwmPrev1 = filteredPwm1;
+    // filteredPwm1 = filter(filteredPwmPrev1, pwm1, filterVal);
+    // filteredPwmPrev1 = filteredPwm1;
 
-    filteredPwm2 = filter(filteredPwmPrev2, pwm2, filterVal);
-    filteredPwmPrev2 = filteredPwm2;
+    // filteredPwm2 = filter(filteredPwmPrev2, pwm2, filterVal);
+    // filteredPwmPrev2 = filteredPwm2;
 
-    filteredPwm3 = filter(filteredPwmPrev3, pwm3, filterVal);
-    filteredPwmPrev3 = filteredPwm3;
+    // filteredPwm3 = filter(filteredPwmPrev3, pwm3, filterVal);
+    // filteredPwmPrev3 = filteredPwm3;
 
-    robotMotorWrite(filteredPwm1, filteredPwm2, filteredPwm3); 
+    // robotMotorWrite(filteredPwm1, filteredPwm2, filteredPwm3); 
 
     // if(arrived)
     // {
@@ -48,6 +53,12 @@ void NightOwlMain()
 }
 
 unsigned long CT = 0;
+
+/* PWMs without Sign & Their Parity */ 
+int uPwm1, uPwm2, uPwm3, pwm1Parity, pwm2Parity, pwm3Parity, pwmParity;
+
+/* PWMs with Sign */
+int pwm1, pwm2, pwm3;
 
 void vibeCheck()
 {
@@ -87,23 +98,6 @@ void vibeCheck()
     Serial.print("   yaw:");
     Serial.println(yaw);
   }
-  
-  //robotMotorWrite(pwm1, pwm2, pwm3);
-
-  //Serial.println(spd);
-//  noInterrupts();
-//  rpm1Copy = rpm1;
-//  rpm2Copy = rpm2;
-//  rpm3Copy = rpm3;
-//  interrupts();
-
-  /*Encoder Check */
-  //Serial.print(" RPM 1:"); Serial.print(rpm1Copy);
-  //Serial.print(" RPM 2:"); Serial.print(rpm2Copy);
-  //Serial.print(" RPM 3:"); Serial.print(rpm3Copy);
-  //Serial.print(" YAW:");   Serial.println(yaw);
-
-  //delay(10);
 }
 
 /* Use this main if Teensy is the main hardware controller */

@@ -5,21 +5,19 @@
 void encode_data(){
   // this is where to encode the data received, like the receive event in i2c
   // where serial_buffer[0] is the data type, and the rest is data
-  
-  uPwm1 = serial_buffer[0];
-  uPwm2 = serial_buffer[1];
-  uPwm3 = serial_buffer[2];
-  pwm1Parity = serial_buffer[3] & 0x01;
-  pwm2Parity = (serial_buffer[3] >> 1) & 0x01;
-  pwm3Parity = (serial_buffer[3] >> 2) & 0x01;
+  uint8_t robotSpeedX_Parity, robotSpeedY_Parity, robotOmega_Parity;
+
+  robotSpeedX_Target = serial_buffer[0];
+  robotSpeedY_Target = serial_buffer[1];
+  robotOmega_Target = serial_buffer[2];
+  robotSpeedX_Parity = serial_buffer[3] & 0x01;
+  robotSpeedY_Parity = (serial_buffer[3] >> 1) & 0x01;
+  robotOmega_Parity = (serial_buffer[3] >> 2) & 0x01;
   arrived = (serial_buffer[3] >> 3) & 0x01;
 
-  if(pwm1Parity) pwm1 = uPwm1*(-1);
-  else pwm1 = uPwm1;
-  if(pwm2Parity) pwm2 = uPwm2*(-1);
-  else pwm2 = uPwm2;
-  if(pwm3Parity) pwm3 = uPwm3*(-1);
-  else pwm3 = uPwm3;
+  if(robotSpeedX_Parity == 1) robotSpeedX_Target = robotSpeedX_Target*(-1);
+  if(robotSpeedY_Parity == 1) robotSpeedY_Target = robotSpeedY_Target*(-1);
+  if(robotOmega_Parity  == 1) robotOmega_Target  = robotOmega_Target*(-1);
   
 }
 
@@ -97,36 +95,51 @@ bool ledState;
 
 void send_to_laptop()
 {
-  uint8_t parity1, parity2, parity3, parity;
+  uint8_t robotSpeedX_Parity, robotSpeedY_Parity, robotOmega_Parity, x_Parity, y_Parity, parity;
   uint16_t yaw100;
 
-  /* Speed without parity */
-  uint16_t SPEED1, SPEED2, SPEED3;
-  
+  /* Without parity */
+  uint16_t absRobotSpeedX_Real, absRobotSpeedY_Real, absRobotOmega_Real;
+  uint16_t absX, absY;
+
+  /* Copy */
+  uint16_t x_Copy, y_Copy, robotSpeedX_Copy, robotSpeedY_Copy, robotOmega_Copy;
+
   noInterrupts();
-  speed1Copy = speed1;
-  speed2Copy = speed2;
-  speed3Copy = speed3;
+  x_Copy = x;
+  y_Copy = y;
+  robotSpeedX_Copy = robotSpeedX_Real;
+  robotSpeedY_Copy = robotSpeedY_Real;
+  robotOmega_Copy  = robotOmega_Real;
   interrupts();
 
-  if(speed1Copy<0)parity1 = 1;
-  else parity1 = 0;
-  if(speed2Copy<0)parity2 = 1;
-  else parity2 = 0;
-  if(speed3Copy<0)parity3 = 1;
-  else parity3 = 0;
 
-  parity = parity1 | (parity2<<1) | (parity3<<2);
+  if(x_Copy<0)x_Parity = 1;
+  else x_Parity = 0;
+  if(y_Copy<0)y_Parity = 1;
+  else y_Parity = 0;
+  if(robotSpeedX_Copy<0)robotSpeedX_Parity = 1;
+  else robotSpeedX_Parity = 0;
+  if(robotSpeedY_Copy<0)robotSpeedY_Parity = 1;
+  else robotSpeedY_Parity = 0;
+  if(robotOmega_Copy<0)robotOmega_Parity = 1;
+  else robotOmega_Parity = 0;
+
+
+  parity = x_Parity | (y_Parity<<1) | (robotSpeedX_Parity<<2) | (robotSpeedY_Parity<<3) | (robotOmega_Parity<<4);
   
-  SPEED1 = (uint16_t)(abs(speed1Copy));
-  SPEED2 = (uint16_t)(abs(speed2Copy));
-  SPEED3 = (uint16_t)(abs(speed3Copy));
+  absX = (uint16_t)(abs(x_Copy));
+  absY = (uint16_t)(abs(y_Copy));
+  absRobotSpeedX_Real = (uint16_t)(abs(robotSpeedX_Copy));
+  absRobotSpeedY_Real = (uint16_t)(abs(robotSpeedY_Copy));
+  absRobotOmega_Real = (uint16_t)(abs(robotOmega_Copy));
 
   yaw100 = (uint16_t)(yaw*100);
   
-  uint8_t data[10] = {(uint8_t)(SPEED1>>8), (uint8_t)(SPEED1&0x00FF), (uint8_t)(SPEED2>>8), (uint8_t)(SPEED2&0x00FF), (uint8_t)(SPEED3>>8), (uint8_t)(SPEED3&0x00FF), parity, 
-                    (uint8_t)(yaw100>>8), (uint8_t)(yaw100&0x00FF), IR_READ|(destination<<4) };
-  serial_send_packets(data, 10);
+  uint8_t data[14] = {(uint8_t)(absX>>8), (uint8_t)(absX&0x00FF), (uint8_t)(absY>>8), (uint8_t)(absY&0x00FF), (uint8_t)(absRobotSpeedX_Real>>8), (uint8_t)(absRobotSpeedX_Real&0x00FF), 
+                      (uint8_t)(absRobotSpeedY_Real>>8), (uint8_t)(absRobotSpeedY_Real&0x00FF), (uint8_t)(absRobotOmega_Real>>8), (uint8_t)(absRobotOmega_Real&0x00FF), parity, 
+                      (uint8_t)(yaw100>>8), (uint8_t)(yaw100&0x00FF), IR_READ|(destination<<4) };
+  serial_send_packets(data, 14);
 
   counter++;
   if(counter>10)

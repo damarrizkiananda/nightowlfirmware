@@ -10,8 +10,19 @@ Encoder enc1(10, 9);
 Encoder enc3(11, 12);
 Encoder enc2(15, 14);
 
+/* Encoder Pulse Difference*/
+int encoderPulseDif1, encoderPulseDif2, encoderPulseDif3;
+
+/* Wheel Speed */
+int wheelSpeed1_Real, wheelSpeed2_Real, wheelSpeed3_Real;
+int wheelSpeed1_Target, wheelSpeed2_Target, wheelSpeed3_Target;
+
 /* Robot Position */
 int x,y;
+
+/* Robot Speed */
+float robotSpeedX_Target, robotSpeedY_Target, robotOmega_Target;
+float robotSpeedX_Real, robotSpeedY_Real, robotOmega_Real;
 
 /* Set the delay between fresh samples */
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 100;
@@ -36,26 +47,12 @@ uint8_t bluetooth_buffer[16];
 
 unsigned long now = 0;
 
-//char input[4];
-
 #define MOTOR_1_A_PIN 3 
 #define MOTOR_1_B_PIN 4
 #define MOTOR_2_A_PIN 5
 #define MOTOR_2_B_PIN 6
 #define MOTOR_3_A_PIN 7
 #define MOTOR_3_B_PIN 8
-
-/* Real Speed */
-int speed1, speed2, speed3;
-/* Copy of Real Speed */
-int speed1Copy, speed2Copy, speed3Copy;
-//uint8_t uPwm1,uPwm2, uPwm3, pwm1Parity, pwm2Parity, pwm3Parity, pwmParity;
-
-/* PWMs without Sign & Their Parity */ 
-int uPwm1, uPwm2, uPwm3, pwm1Parity, pwm2Parity, pwm3Parity, pwmParity;
-
-/* PWMs with Sign */
-int pwm1, pwm2, pwm3;
 
 #define IR_1_PIN 25
 #define IR_2_PIN 27
