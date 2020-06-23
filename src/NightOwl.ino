@@ -13,16 +13,16 @@ Encoder enc2(15, 14);
 /* Encoder Pulse Difference*/
 int encoderPulseDif1, encoderPulseDif2, encoderPulseDif3;
 
-/* Wheel Speed */
-int wheelSpeed1_Real, wheelSpeed2_Real, wheelSpeed3_Real;
-int wheelSpeed1_Target, wheelSpeed2_Target, wheelSpeed3_Target;
+/* Linear Wheel Speed */
+double wheelSpeed1_Real, wheelSpeed2_Real, wheelSpeed3_Real;
+double wheelSpeed1_Target, wheelSpeed2_Target, wheelSpeed3_Target;
 
 /* Robot Position */
-int x,y;
+double x, y, yaw;
 
 /* Robot Speed */
-float robotSpeedX_Target, robotSpeedY_Target, robotOmega_Target;
-float robotSpeedX_Real, robotSpeedY_Real, robotOmega_Real;
+double robotSpeedX_Target, robotSpeedY_Target, robotOmega_Target;
+double robotSpeedX_Real, robotSpeedY_Real, robotOmega_Real;
 
 #define TIMER_INTERRUPT_PERIOD 100
 
@@ -30,7 +30,6 @@ float robotSpeedX_Real, robotSpeedY_Real, robotOmega_Real;
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 10;
 Adafruit_BNO055 bno = Adafruit_BNO055(55,0x29,&Wire);
 sensors_event_t orientationData;
-double yaw;
 
 #define SERIAL_HEAD   '{'
 #define SERIAL_TAIL   '}'
@@ -106,10 +105,14 @@ PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta
 /* Conversion Constants */
 #define TO_DEG    57.29577951308
 #define TO_RAD    0.01745329252
+#define PI        3.1415926535
 
-/* Circumference/PPR 
- *     in cm
+/*     Dist/pulse = 
+ *  Circumference/PPR 
+ *       in cm
  */
+#define CIRCUMFERENCE 31.4159265
+#define PPR 1024
 #define DIST_PER_PULSE 0.03067961
 
 void setup() 
@@ -152,16 +155,16 @@ void setup()
 }
 
 
-void loop() 
+void loop()  
 {
   // Serial.println(IR_READ,BIN);
   // delay(500);
-  //NightOwlMain();
-//  vibeCheck();
-//  bluetoothCheck();
-//  timerCheck();
- // odometryCheck();
-//  inverseCheck();
+  // NightOwlMain();
+  // vibeCheck();
+  // bluetoothCheck();
+  // timerCheck();
+  // odometryCheck();
+  // inverseCheck();
 mainMain();
-//  delay(10);
+  // delay(10);
 }

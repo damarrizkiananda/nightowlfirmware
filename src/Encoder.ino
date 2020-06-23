@@ -1,5 +1,5 @@
 signed long lastPulse1, lastPulse2, lastPulse3;
-int lastX, lastY, lastYaw;
+double lastX, lastY, lastYaw;
 
 void updateSpeedAndPosition()
 {
@@ -11,20 +11,16 @@ void updateSpeedAndPosition()
   lastPulse2 = enc2.read()/4;
   lastPulse3 = enc3.read()/4;  
 
-  wheelSpeed1_Real = encoderPulseDif1;
-  wheelSpeed2_Real = encoderPulseDif2;
-  wheelSpeed3_Real = encoderPulseDif3;
+  wheelSpeed1_Real = encoderPulseDif1  * 2 * PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
+  wheelSpeed2_Real = encoderPulseDif2  * 2 * PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
+  wheelSpeed3_Real = encoderPulseDif3  * 2 * PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
 
   getYawDeg();
   getPosition();
 
-  robotSpeedX_Real = x-lastX;
-  robotSpeedY_Real = y-lastY;
-  robotOmega_Real  = yaw-lastYaw;
-
-  lastX = x;
-  lastY = y;
-  lastYaw = yaw;
+  robotSpeedX_Real = (x-lastX) * 1000 / TIMER_INTERRUPT_PERIOD;
+  robotSpeedY_Real = (y-lastY) * 1000 / TIMER_INTERRUPT_PERIOD;
+  robotOmega_Real  = (yaw-lastYaw) * TO_RAD * 1000 / TIMER_INTERRUPT_PERIOD;
 
   sendDataPlease = true;
 }
