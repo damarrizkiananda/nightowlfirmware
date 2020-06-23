@@ -106,6 +106,7 @@ PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta
 #define TO_DEG    57.29577951308
 #define TO_RAD    0.01745329252
 #define PI        3.1415926535
+#define TWO_PI    6.2831853071
 
 /*     Dist/pulse = 
  *  Circumference/PPR 

@@ -11,9 +11,9 @@ void updateSpeedAndPosition()
   lastPulse2 = enc2.read()/4;
   lastPulse3 = enc3.read()/4;  
 
-  wheelSpeed1_Real = encoderPulseDif1  * 2 * PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
-  wheelSpeed2_Real = encoderPulseDif2  * 2 * PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
-  wheelSpeed3_Real = encoderPulseDif3  * 2 * PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
+  wheelSpeed1_Real = encoderPulseDif1  * TWO_PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
+  wheelSpeed2_Real = encoderPulseDif2  * TWO_PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
+  wheelSpeed3_Real = encoderPulseDif3  * TWO_PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
 
   getYawDeg();
   getPosition();
