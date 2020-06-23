@@ -23,12 +23,12 @@
 /* Important Angle in Degree */
 #define delta 30
 
-/* This function convert target vx, vy, & omega to wheel speed (global variables) */ 
+/* This function convert target vx, vy, & omega to wheel Velocity (global variables) */ 
 void inverseKinematics(int vx, int vy, int omega)
 {
-  wheelSpeed1_Target =  cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx + L*omega;
-  wheelSpeed2_Target = -(-cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx) + L*omega;
-  wheelSpeed3_Target = -vy + L*omega;  
+  wheelVelocity1_Target =  cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx + L*omega;
+  wheelVelocity2_Target = -(-cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx) + L*omega;
+  wheelVelocity3_Target = -vy + L*omega;  
 }
 
 void positionPID(int targetX, int targetY, int targetTheta)
@@ -49,10 +49,10 @@ void positionPID(int targetX, int targetY, int targetTheta)
 
   inverseKinematics(OutputX, OutputY, OutputTheta);
   
-  /* With Motor Speed Control */
-  motorPID(wheelSpeed1_Target,wheelSpeed2_Target,wheelSpeed3_Target);
+  /* With Motor Velocity Control */
+  motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
 
-  /* Without motor speed control */
+  /* Without motor Velocity control */
   //robotMotorWrite(pwm1,pwm2,pwm3);
   
 }
@@ -64,9 +64,9 @@ void motorPID(int target1, int target2, int target3)
   Setpoint3 = target3;
 
   noInterrupts();
-  Input1 = wheelSpeed1_Real;
-  Input2 = wheelSpeed2_Real;
-  Input3 = wheelSpeed3_Real;
+  Input1 = wheelVelocity1_Real;
+  Input2 = wheelVelocity2_Real;
+  Input3 = wheelVelocity3_Real;
   interrupts();
 
   motorPID1.Compute();

@@ -13,16 +13,16 @@ Encoder enc2(15, 14);
 /* Encoder Pulse Difference*/
 int encoderPulseDif1, encoderPulseDif2, encoderPulseDif3;
 
-/* Linear Wheel Speed */
-double wheelSpeed1_Real, wheelSpeed2_Real, wheelSpeed3_Real;
-double wheelSpeed1_Target, wheelSpeed2_Target, wheelSpeed3_Target;
+/* Linear Wheel Velocity */
+double wheelVelocity1_Real, wheelVelocity2_Real, wheelVelocity3_Real;
+double wheelVelocity1_Target, wheelVelocity2_Target, wheelVelocity3_Target;
 
 /* Robot Position */
 double x, y, yaw;
 
-/* Robot Speed */
-double robotSpeedX_Target, robotSpeedY_Target, robotOmega_Target;
-double robotSpeedX_Real, robotSpeedY_Real, robotOmega_Real;
+/* Robot Velocity */
+double robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target;
+double robotVelocityX_Real, robotVelocityY_Real, robotOmega_Real;
 
 #define TIMER_INTERRUPT_PERIOD 100
 
@@ -76,7 +76,7 @@ uint8_t destination;
 #define FO        2
 #define Toilet    3
 
-/* Motor Speed Control */ 
+/* Motor Velocity Control */ 
 double Setpoint1, Input1, Output1;
 double Kp1=0.5, Ki1=1.5, Kd1=0.001;
 PID motorPID1(&Input1, &Output1, &Setpoint1, Kp1, Ki1, Kd1, DIRECT);
@@ -88,6 +88,20 @@ PID motorPID2(&Input2, &Output2, &Setpoint2, Kp2, Ki2, Kd2, DIRECT);
 double Setpoint3, Input3, Output3;
 double Kp3=0.5, Ki3=1.5, Kd3=0.001;
 PID motorPID3(&Input3, &Output3, &Setpoint3, Kp3, Ki3, Kd3, DIRECT);
+
+/* Robot Velocity Control */
+double SetpointVX, InputVX, OutputVX;
+double KpVX=8, KiVX=1, KdVX=0.001;
+PID velocityXPID(&InputVX, &OutputVX, &SetpointVX, KpVX, KiVX, KdVX, DIRECT);
+
+double SetpointVY, InputVY, OutputVY;
+double KpVY=8, KiVY=1, KdVY=0.001;
+PID velocityYPID(&InputVY, &OutputVY, &SetpointVY, KpVY, KiVY, KdVY, DIRECT);
+
+double SetpointOmega, InputOmega, OutputOmega;
+double KpOmega=8, KiOmega=1, KdOmega=0.001;
+PID omegaPID(&InputOmega, &OutputOmega, &SetpointOmega, KpOmega, KiOmega, KdOmega, DIRECT);
+
 
 /* Robot Position Control */
 double SetpointX, InputX, OutputX;
@@ -140,7 +154,7 @@ void setup()
   Serial.begin(115200);
   Serial.setTimeout(100);
 
-  FlexiTimer2::set(TIMER_INTERRUPT_PERIOD, 1.0/1000, updateSpeedAndPosition); // call every 100 1ms "ticks"
+  FlexiTimer2::set(TIMER_INTERRUPT_PERIOD, 1.0/1000, updateVelocityAndPosition); // call every 100 1ms "ticks"
   // FlexiTimer2::set(500, flash); // MsTimer2 style is also supported
   FlexiTimer2::start();
 

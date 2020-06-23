@@ -184,7 +184,7 @@ void mainMain()
   {
     inverseKinematics(bluetoothX, bluetoothY, bluetoothO);
 
-    /* Without motor speed control */
+    /* Without motor Velocity control */
     //robotMotorWrite(pwm1,pwm2,pwm3);, 
 
     motorPID(pwm1, pwm2, pwm3);
