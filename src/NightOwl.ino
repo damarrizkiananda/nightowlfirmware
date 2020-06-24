@@ -18,7 +18,7 @@ double wheelVelocity1_Real, wheelVelocity2_Real, wheelVelocity3_Real;
 double wheelVelocity1_Target, wheelVelocity2_Target, wheelVelocity3_Target;
 
 /* Robot Position */
-double x, y, yaw;
+double x_Real, y_Real, yaw_Real;
 
 /* Robot Velocity */
 double robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target;

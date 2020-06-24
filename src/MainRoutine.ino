@@ -6,7 +6,21 @@ int filteredPwm3, filteredPwmPrev3;
 
 void NightOwlMain()
 {
-
+  if(robotState == WAITING_FOR_NEW_DESTINATION)
+  {
+    robotMotorWrite(0, 0, 0); 
+    bluetooth_receive();
+    
+    if(newDestination) 
+    {
+      robotState = MOVING;
+      newDestination = false;   
+    }
+  }
+  else if(robotState == MOVING)
+  {
+    
+  }
 }
 
 void NightOwlMainOld()
@@ -92,11 +106,11 @@ void vibeCheck()
     Serial.print("   vy:");
     Serial.print(OutputY);
     Serial.print("   x:");
-    Serial.print(x);
+    Serial.print(x_Real);
     Serial.print("   y:");
-    Serial.print(y);
+    Serial.print(y_Real);
     Serial.print("   yaw:");
-    Serial.println(yaw);
+    Serial.println(yaw_Real);
   }
 }
 
@@ -133,9 +147,9 @@ void odometryCheck()
   if(sendDataPlease)
   {
     getYawDeg();
-    Serial.print(" x:"); Serial.print(x);
-    Serial.print(" y:"); Serial.print(y);
-    Serial.print(" yaw:"); Serial.print(yaw);
+    Serial.print(" x:"); Serial.print(x_Real);
+    Serial.print(" y:"); Serial.print(y_Real);
+    Serial.print(" yaw:"); Serial.print(yaw_Real);
     Serial.println();
     sendDataPlease = false;
   }
@@ -190,7 +204,7 @@ void mainMain()
     motorPID(pwm1, pwm2, pwm3);
     
   
-    if(x>btime)
+    if(x_Real>btime)
     {
       Serial.println("Time Ex");
       robotMotorWrite(0,0,0);
@@ -200,9 +214,9 @@ void mainMain()
   }
   else if(state==STATE_SEND_DATA)
   {
-    Serial.print(" x:"); Serial.print(x);
-    Serial.print(" y:"); Serial.print(y);
-    Serial.print(" yaw:"); Serial.print(yaw);
+    Serial.print(" x:"); Serial.print(x_Real);
+    Serial.print(" y:"); Serial.print(y_Real);
+    Serial.print(" yaw:"); Serial.print(yaw_Real);
     state = STATE_WAIT;
   }
 }

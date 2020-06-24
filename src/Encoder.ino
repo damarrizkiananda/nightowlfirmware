@@ -18,9 +18,13 @@ void updateVelocityAndPosition()
   getYawDeg();
   getPosition();
 
-  robotVelocityX_Real = (x-lastX) * 1000 / TIMER_INTERRUPT_PERIOD;
-  robotVelocityY_Real = (y-lastY) * 1000 / TIMER_INTERRUPT_PERIOD;
-  robotOmega_Real  = (yaw-lastYaw) * TO_RAD * 1000 / TIMER_INTERRUPT_PERIOD;
+  robotVelocityX_Real = (x_Real-lastX) * 1000 / TIMER_INTERRUPT_PERIOD;
+  robotVelocityY_Real = (y_Real-lastY) * 1000 / TIMER_INTERRUPT_PERIOD;
+  robotOmega_Real  = (yaw_Real-lastYaw) * TO_RAD * 1000 / TIMER_INTERRUPT_PERIOD;
+
+  lastX = x_Real;
+  lastY = y_Real;
+  lastYaw = yaw_Real;
 
   sendDataPlease = true;
 }
@@ -31,12 +35,12 @@ double x_count, y_count;
 
 void getPosition()
 {
-  sin_theta = sin(yaw*TO_RAD);
-  cos_theta = cos(yaw*TO_RAD);
+  sin_theta = sin(yaw_Real*TO_RAD);
+  cos_theta = cos(yaw_Real*TO_RAD);
   
   y_count += (sqrt3 * sin_theta * (encoderPulseDif1 - encoderPulseDif2) + cos_theta * (encoderPulseDif1 + encoderPulseDif2 - 2 * encoderPulseDif3)) / 3;
   x_count -= (-sqrt3 * cos_theta * (encoderPulseDif1 - encoderPulseDif2) + sin_theta * (encoderPulseDif1 + encoderPulseDif2 - 2 * encoderPulseDif3)) / 3;
        
-  x = (int)(x_count * DIST_PER_PULSE);
-  y = (int)(y_count * DIST_PER_PULSE);
+  x_Real = (int)(x_count * DIST_PER_PULSE);
+  y_Real = (int)(y_count * DIST_PER_PULSE);
 }

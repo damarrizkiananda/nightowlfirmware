@@ -38,9 +38,9 @@ void positionPID(int targetX, int targetY, int targetTheta)
   SetpointTheta = targetTheta;
 
   noInterrupts();
-  InputX = x;
-  InputY = y;
-  InputTheta = yaw;
+  InputX = x_Real;
+  InputY = y_Real;
+  InputTheta = yaw_Real;
   interrupts();
 
   positionPIDX.Compute();
@@ -99,3 +99,9 @@ float filter(float prevValue, float currentValue, int filter) {
   return lengthFiltered;  
 }
 
+double x_Target, y_Target, yaw_Target;
+
+void trajectoryControl()
+{
+
+}
