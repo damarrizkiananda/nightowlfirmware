@@ -144,14 +144,15 @@ void timerCheck()
 
 void odometryCheck()
 {
-  if(sendDataPlease)
+  if(millis()-CT>200)
   {
-    getYawDeg();
+    //getYawDeg();
     Serial.print(" x:"); Serial.print(x_Real);
     Serial.print(" y:"); Serial.print(y_Real);
     Serial.print(" yaw:"); Serial.print(yaw_Real);
     Serial.println();
-    sendDataPlease = false;
+    CT = millis();
+    //sendDataPlease = false;
   }
 }
 
@@ -240,7 +241,3 @@ void inverseCheck()
   Serial.println(pwm3);
   delay(10);  
 }
-
-
-
-

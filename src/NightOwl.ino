@@ -178,8 +178,8 @@ void loop()
   // vibeCheck();
   // bluetoothCheck();
   // timerCheck();
-  // odometryCheck();
+  odometryCheck();
   // inverseCheck();
-mainMain();
+  // mainMain();
   // delay(10);
 }
