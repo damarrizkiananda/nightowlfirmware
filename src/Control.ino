@@ -50,10 +50,10 @@ void positionPID(int targetX, int targetY, int targetTheta)
   inverseKinematics(OutputX, OutputY, OutputTheta);
   
   /* With Motor Velocity Control */
-  motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
+  //motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
 
   /* Without motor Velocity control */
-  //robotMotorWrite(pwm1,pwm2,pwm3);
+  robotMotorWrite(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
   
 }
 

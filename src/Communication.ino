@@ -90,9 +90,6 @@ void serial_send( int32_t data){
   Serial.write(buff, sizeof(int32_t));
 }
 
-int counter;
-bool ledState;
-
 void send_to_laptop()
 {
   uint8_t robotVelocityX_Parity, robotVelocityY_Parity, robotOmega_Parity, x_Parity, y_Parity, parity;
@@ -140,14 +137,6 @@ void send_to_laptop()
                       (uint8_t)(absRobotVelocityY_Real>>8), (uint8_t)(absRobotVelocityY_Real&0x00FF), (uint8_t)(absRobotOmega_Real>>8), (uint8_t)(absRobotOmega_Real&0x00FF), parity, 
                       (uint8_t)(yaw100>>8), (uint8_t)(yaw100&0x00FF), IR_READ|(destination<<4) };
   serial_send_packets(data, 14);
-
-  counter++;
-  if(counter>10)
-  {
-    ledState = !ledState;
-    counter = 0;
-  }
-  digitalWrite(13, ledState);
 
   sendDataPlease = false;
 }

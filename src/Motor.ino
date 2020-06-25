@@ -1,12 +1,12 @@
 void motorWrite(int pwmInput, int pinA, int pinB)
 {
   pwmInput = constrain(pwmInput, -255, 255);
-  if(pwmInput>20)
+  if(pwmInput>30)
   {
     analogWrite(pinA, pwmInput);
     analogWrite(pinB, 0);
   }
-  else if(pwmInput<-20)
+  else if(pwmInput<-30)
   {
     analogWrite(pinA, 0);
     analogWrite(pinB, -pwmInput);

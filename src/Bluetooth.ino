@@ -7,6 +7,7 @@ void bluetooth_encode_data(){
   // where bluetooth_buffer[0] is the data type, and the rest is data
   
   destination = bluetooth_buffer[0];
+
   newDestination = true;
 }
 

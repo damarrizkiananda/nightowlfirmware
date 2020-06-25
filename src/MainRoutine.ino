@@ -128,17 +128,19 @@ void bluetoothCheck()
   if(newDestination)
   {
     Serial.println("Data Accepted, Sending Replies");
-    bluetooth_send_packets(data, 3);
+    for(int i = 0; i<=3; i++) Serial.print(bluetooth_buffer[i]);
+    Serial.println();
+    //bluetooth_send_packets(data, 3);
     newDestination = false;
   }
 }
 
 void timerCheck()
 {
-   if(sendDataPlease)
+   if(velocityAndPositionUpdated == true)
   {
     Serial.println(millis());
-    sendDataPlease = false;
+    velocityAndPositionUpdated = false;
   }
 }
 
@@ -164,25 +166,22 @@ int bluetoothX, bluetoothY, bluetoothO;
 bool go = false;
 unsigned long bc, btime;
 int state = STATE_WAIT;
+int path;
 
 void mainMain()
-{
-  if(sendDataPlease)
-  {
-    getYawDeg();
-    sendDataPlease = false;
-  }
-  
+{ 
   if(state==STATE_WAIT)
   {
     if(BLUETOOTH_SERIAL.available())
     {
       bluetoothX = BLUETOOTH_SERIAL.parseInt();
-      bluetoothY = BLUETOOTH_SERIAL.parseInt();
-      bluetoothO = BLUETOOTH_SERIAL.parseInt();
-      btime = BLUETOOTH_SERIAL.parseInt();
+      //bluetoothY = BLUETOOTH_SERIAL.parseInt();
+      //bluetoothO = BLUETOOTH_SERIAL.parseInt();
+      //btime = BLUETOOTH_SERIAL.parseInt();
       //bc = millis();
+      Serial.println("Going");
       state = STATE_GO;
+
     }
 
   // if(Serial.available())
@@ -197,28 +196,50 @@ void mainMain()
   }
   else if (state==STATE_GO)
   {
-    inverseKinematics(bluetoothX, bluetoothY, bluetoothO);
-
-    /* Without motor Velocity control */
-    //robotMotorWrite(pwm1,pwm2,pwm3);, 
-
-    motorPID(pwm1, pwm2, pwm3);
-    
-  
-    if(x_Real>btime)
+    if(path==0)
     {
-      Serial.println("Time Ex");
-      robotMotorWrite(0,0,0);
-      go = false;
-      state = STATE_SEND_DATA; 
+      positionPID(70,0,0);
+      if(abs(x_Real-70)<10)
+      {
+        Serial.println("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
     }
+    else if(path==1)
+    {
+      positionPID(140,0,0);
+      if(abs(x_Real-140)<10)
+      {
+        Serial.println("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==2)
+    {
+      positionPID(210,0,0);
+      if(abs(yaw_Real-210)<10)
+      {
+        Serial.println("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==3) 
+    {
+      state = STATE_SEND_DATA;
+    }
+    
+    
   }
   else if(state==STATE_SEND_DATA)
   {
     Serial.print(" x:"); Serial.print(x_Real);
     Serial.print(" y:"); Serial.print(y_Real);
-    Serial.print(" yaw:"); Serial.print(yaw_Real);
+    Serial.print(" yaw:"); Serial.println(yaw_Real);
     state = STATE_WAIT;
+    Serial.println("Waiting for new data");
   }
 }
 

@@ -24,7 +24,7 @@ double x_Real, y_Real, yaw_Real;
 double robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target;
 double robotVelocityX_Real, robotVelocityY_Real, robotOmega_Real;
 
-#define TIMER_INTERRUPT_PERIOD 100
+#define TIMER_INTERRUPT_PERIOD 50
 
 /* Set the delay between fresh samples */
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 10;
@@ -63,6 +63,7 @@ unsigned long now = 0;
 #define IR_READ (!digitalRead(IR_1_PIN)) | ((!digitalRead(IR_2_PIN))<<1) | ((!digitalRead(IR_3_PIN))<<2) | ((!digitalRead(IR_4_PIN))<<3)
 
 bool sendDataPlease;
+bool velocityAndPositionUpdated;
 
 #define WAITING_FOR_NEW_DESTINATION 0
 #define MOVING 1
@@ -105,11 +106,11 @@ PID omegaPID(&InputOmega, &OutputOmega, &SetpointOmega, KpOmega, KiOmega, KdOmeg
 
 /* Robot Position Control */
 double SetpointX, InputX, OutputX;
-double KpX=8, KiX=1, KdX=0.001;
+double KpX=16, KiX=1, KdX=0.001;
 PID positionPIDX(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
 
 double SetpointY, InputY, OutputY;
-double KpY=8, KiY=1, KdY=0.001;
+double KpY=16, KiY=1, KdY=0.001;
 PID positionPIDY(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
 
 double SetpointTheta, InputTheta, OutputTheta;
@@ -158,13 +159,13 @@ void setup()
   // FlexiTimer2::set(500, flash); // MsTimer2 style is also supported
   FlexiTimer2::start();
 
-  motorPID1.SetMode(AUTOMATIC); motorPID1.SetOutputLimits(-255,255); motorPID1.SetSampleTime(100);
-  motorPID2.SetMode(AUTOMATIC); motorPID2.SetOutputLimits(-255,255); motorPID1.SetSampleTime(100);
-  motorPID3.SetMode(AUTOMATIC); motorPID3.SetOutputLimits(-255,255); motorPID1.SetSampleTime(100);
+  motorPID1.SetMode(AUTOMATIC); motorPID1.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
+  motorPID2.SetMode(AUTOMATIC); motorPID2.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
+  motorPID3.SetMode(AUTOMATIC); motorPID3.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
 
-  positionPIDX.SetMode(AUTOMATIC); positionPIDX.SetOutputLimits(-100,100); positionPIDX.SetSampleTime(100);
-  positionPIDY.SetMode(AUTOMATIC); positionPIDY.SetOutputLimits(-100,100); positionPIDY.SetSampleTime(100);
-  positionPIDTheta.SetMode(AUTOMATIC); positionPIDTheta.SetOutputLimits(-100,100); positionPIDTheta.SetSampleTime(100);
+  positionPIDX.SetMode(AUTOMATIC); positionPIDX.SetOutputLimits(-250,250); positionPIDX.SetSampleTime(50);
+  positionPIDY.SetMode(AUTOMATIC); positionPIDY.SetOutputLimits(-250,250); positionPIDY.SetSampleTime(50);
+  positionPIDTheta.SetMode(AUTOMATIC); positionPIDTheta.SetOutputLimits(-250,250); positionPIDTheta.SetSampleTime(50);
 
   getYawDeg();
 }
@@ -178,8 +179,9 @@ void loop()
   // vibeCheck();
   // bluetoothCheck();
   // timerCheck();
-  odometryCheck();
+  // odometryCheck();
   // inverseCheck();
-  // mainMain();
+  mainMain();
   // delay(10);
+  // bluetooth_receive();
 }

@@ -1,6 +1,9 @@
 signed long lastPulse1, lastPulse2, lastPulse3;
 double lastX, lastY, lastYaw;
 
+int counter;
+bool ledState;
+
 void updateVelocityAndPosition()
 {
   encoderPulseDif1 = (int32_t)(enc1.read()/4-lastPulse1);
@@ -26,7 +29,16 @@ void updateVelocityAndPosition()
   lastY = y_Real;
   lastYaw = yaw_Real;
 
-  sendDataPlease = true;
+  counter++;
+  if(counter>50)
+  {
+    ledState = !ledState;
+    counter = 0;
+  }
+  digitalWrite(13, ledState);
+
+
+  velocityAndPositionUpdated = true;
 }
 
 #define sqrt3 1.73205080757
