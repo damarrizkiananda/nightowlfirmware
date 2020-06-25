@@ -106,15 +106,15 @@ PID omegaPID(&InputOmega, &OutputOmega, &SetpointOmega, KpOmega, KiOmega, KdOmeg
 
 /* Robot Position Control */
 double SetpointX, InputX, OutputX;
-double KpX=16, KiX=1, KdX=0.001;
+double KpX=17, KiX=1, KdX=0.001;
 PID positionPIDX(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
 
 double SetpointY, InputY, OutputY;
-double KpY=16, KiY=1, KdY=0.001;
+double KpY=17, KiY=1, KdY=0.001;
 PID positionPIDY(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
 
 double SetpointTheta, InputTheta, OutputTheta;
-double KpTheta=8, KiTheta=1, KdTheta=0.001;
+double KpTheta=5, KiTheta=1, KdTheta=0.001;
 PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta, KdTheta, DIRECT);
 
 /* Conversion Constants */
@@ -179,7 +179,7 @@ void loop()
   // vibeCheck();
   // bluetoothCheck();
   // timerCheck();
-  // odometryCheck();
+//  odometryCheck();
   // inverseCheck();
   mainMain();
   // delay(10);

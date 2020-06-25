@@ -166,7 +166,7 @@ int bluetoothX, bluetoothY, bluetoothO;
 bool go = false;
 unsigned long bc, btime;
 int state = STATE_WAIT;
-int path;
+int path = 1;
 
 void mainMain()
 { 
@@ -196,43 +196,144 @@ void mainMain()
   }
   else if (state==STATE_GO)
   {
-    if(path==0)
+    if(path==1)
     {
-      positionPID(70,0,0);
-      if(abs(x_Real-70)<10)
+      positionPID(200,0,0);
+      if(abs(x_Real-200)<15)
       {
-        Serial.println("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==1)
-    {
-      positionPID(140,0,0);
-      if(abs(x_Real-140)<10)
-      {
-        Serial.println("Target Reached");
+        Serial.print("Target Reached");
         robotMotorWrite(0,0,0);
         path++;
       }
     }
     else if(path==2)
     {
-      positionPID(210,0,0);
-      if(abs(yaw_Real-210)<10)
+      positionPID(400,0,0);
+      if(abs(x_Real-400)<15)
       {
-        Serial.println("Target Reached");
+        Serial.print("Target Reached");
         robotMotorWrite(0,0,0);
         path++;
       }
     }
-    else if(path==3) 
+    else if(path==3)
+    {
+      positionPID(600,0,0);
+      if(abs(x_Real-600)<15)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==4)
+    {
+      positionPID(800,0,0);
+      if(abs(x_Real-800)<15)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==5)
+    {
+      positionPID(1000,0,0);
+      if(abs(x_Real-1000)<15)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==6)
+    {
+      positionPID(1150,0,0);
+      if(abs(x_Real-1150)<15)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==7)
+    {
+      positionPID(1345,0,0);
+      if(abs(x_Real-1345)<15)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==8) /* Belok */
+    {
+      positionPID(1345,0,-90);
+      if(abs(yaw_Real+90)<5)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==9)
+    {
+      positionPID(1345,-300,-90);
+      if(abs(y_Real+300)<15)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==10)
+    {
+      positionPID(1345,-600,-90);
+      if(abs(y_Real+600)<15)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==11)
+    {
+      positionPID(1345,-900,-90);
+      if(abs(y_Real+900)<15)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==12)
+    {
+      positionPID(1345,-1200,-90);
+      if(abs(y_Real+1200)<15)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==13)
+    {
+      positionPID(1345,-1200,120);
+      if(abs(yaw_Real-120)<5)
+      {
+        Serial.print("Target Reached");
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    else if(path==14) 
     {
       state = STATE_SEND_DATA;
     }
-    
+
     
   }
+
   else if(state==STATE_SEND_DATA)
   {
     Serial.print(" x:"); Serial.print(x_Real);
@@ -254,11 +355,13 @@ void inverseCheck()
     inverseO = Serial.parseInt();
   }
 
+
+
   inverseKinematics(inverseX, inverseY, inverseO);
-  Serial.print(pwm1);
+  Serial.print(wheelVelocity1_Target);
   Serial.print(" ");
-  Serial.print(pwm2);
+  Serial.print(wheelVelocity2_Target);
   Serial.print(" ");
-  Serial.println(pwm3);
+  Serial.println(wheelVelocity3_Target);
   delay(10);  
 }

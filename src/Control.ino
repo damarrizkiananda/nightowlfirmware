@@ -31,6 +31,9 @@ void inverseKinematics(int vx, int vy, int omega)
   wheelVelocity3_Target = -vy + L*omega;  
 }
 
+double sin_theta_, cos_theta_, yaw_Copy_;
+double globalOutputX, globalOutputY;
+
 void positionPID(int targetX, int targetY, int targetTheta)
 {
   SetpointX = targetX;
@@ -41,13 +44,20 @@ void positionPID(int targetX, int targetY, int targetTheta)
   InputX = x_Real;
   InputY = y_Real;
   InputTheta = yaw_Real;
+  yaw_Copy_ = yaw_Real;
   interrupts();
 
   positionPIDX.Compute();
   positionPIDY.Compute();
   positionPIDTheta.Compute();
 
-  inverseKinematics(OutputX, OutputY, OutputTheta);
+  sin_theta_ = sin(-yaw_Copy_*TO_RAD);
+  cos_theta_ = cos(-yaw_Copy_*TO_RAD);
+  
+  globalOutputX = OutputX*cos_theta_ - OutputY*sin_theta_;
+  globalOutputY = OutputX*sin_theta_ + OutputY*cos_theta_;
+
+  inverseKinematics(globalOutputX, globalOutputY, OutputTheta);
   
   /* With Motor Velocity Control */
   //motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
