@@ -31,7 +31,7 @@ void inverseKinematics(int vx, int vy, int omega)
   wheelVelocity3_Target = -vy + L*omega;  
 }
 
-double sin_theta_, cos_theta_, yaw_Copy_;
+double sin_theta_, cos_theta_, yaw_Copy_, last_yaw_Real;
 double globalOutputX, globalOutputY;
 
 void positionPID(int targetX, int targetY, int targetTheta)
