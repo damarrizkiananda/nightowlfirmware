@@ -33,23 +33,33 @@ void inverseKinematics(int vx, int vy, int omega)
 
 void positionPID(int targetX, int targetY, int targetTheta)
 {
-  SetpointX = targetX;
-  SetpointY = targetY;
-  SetpointTheta = targetTheta;
-
   noInterrupts();
   InputX = x_Real;
   InputY = y_Real;
   InputTheta = yaw_Real;
-  double yaw_Copy_ = yaw_Real;
+  auto currentYaw = yaw_Real;
   interrupts();
 
-  positionPIDX.Compute(0);
-  positionPIDY.Compute(0);
-  positionPIDTheta.Compute(1);
+  if(targetTheta-currentYaw < -180)
+  {
+    targetTheta+=360;
+  }
 
-  double sin_theta = sin(-yaw_Copy_*TO_RAD);
-  double cos_theta = cos(-yaw_Copy_*TO_RAD);
+  if(targetTheta-currentYaw > 180)
+  {
+    targetTheta-=360;
+  }
+
+  SetpointX = targetX;
+  SetpointY = targetY;
+  SetpointTheta = targetTheta;
+
+  positionPIDX.Compute();
+  positionPIDY.Compute();
+  positionPIDTheta.Compute();
+
+  double sin_theta = sin(-currentYaw*TO_RAD);
+  double cos_theta = cos(-currentYaw*TO_RAD);
   
   double globalOutputX = OutputX*cos_theta - OutputY*sin_theta;
   double globalOutputY = OutputX*sin_theta + OutputY*cos_theta;
@@ -76,9 +86,9 @@ void motorPID(int target1, int target2, int target3)
   Input3 = wheelVelocity3_Real;
   interrupts();
 
-  motorPID1.Compute(0);
-  motorPID2.Compute(0);
-  motorPID3.Compute(0);
+  motorPID1.Compute();
+  motorPID2.Compute();
+  motorPID3.Compute();
 
   robotMotorWrite(Output1, Output2, Output3);
 }

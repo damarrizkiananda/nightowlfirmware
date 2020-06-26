@@ -352,8 +352,8 @@ void mainMain()
 
     if(path==1)
     {
-      positionPID(100,100,0);
-      if(abs(x_Real-100)<15 )
+      positionPID(0,0,180);
+      if(abs(yaw_Real-180)<5 )
       {
         robotMotorWrite(0,0,0);
         path++;
@@ -363,7 +363,6 @@ void mainMain()
         robotMotorWrite(0,0,0);
         path++;
       }
-
     }
     // else if(path==2)
     // {
