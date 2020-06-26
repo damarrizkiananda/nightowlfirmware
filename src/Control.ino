@@ -37,15 +37,15 @@ void positionPID(int targetX, int targetY, int targetTheta)
   InputX = x_Real;
   InputY = y_Real;
   InputTheta = yaw_Real;
-  auto currentYaw = yaw_Real;
+  auto currentTheta = yaw_Real;
   interrupts();
 
-  if(targetTheta-currentYaw < -180)
+  if(targetTheta-currentTheta < -180)
   {
     targetTheta+=360;
   }
 
-  if(targetTheta-currentYaw > 180)
+  if(targetTheta-currentTheta > 180)
   {
     targetTheta-=360;
   }
@@ -58,8 +58,8 @@ void positionPID(int targetX, int targetY, int targetTheta)
   positionPIDY.Compute();
   positionPIDTheta.Compute();
 
-  double sin_theta = sin(-currentYaw*TO_RAD);
-  double cos_theta = cos(-currentYaw*TO_RAD);
+  double sin_theta = sin(-currentTheta*TO_RAD);
+  double cos_theta = cos(-currentTheta*TO_RAD);
   
   double globalOutputX = OutputX*cos_theta - OutputY*sin_theta;
   double globalOutputY = OutputX*sin_theta + OutputY*cos_theta;
