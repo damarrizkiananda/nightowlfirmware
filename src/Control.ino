@@ -44,9 +44,9 @@ void positionPID(int targetX, int targetY, int targetTheta)
   double yaw_Copy_ = yaw_Real;
   interrupts();
 
-  positionPIDX.Compute();
-  positionPIDY.Compute();
-  positionPIDTheta.Compute();
+  positionPIDX.Compute(0);
+  positionPIDY.Compute(0);
+  positionPIDTheta.Compute(1);
 
   double sin_theta = sin(-yaw_Copy_*TO_RAD);
   double cos_theta = cos(-yaw_Copy_*TO_RAD);
@@ -76,9 +76,9 @@ void motorPID(int target1, int target2, int target3)
   Input3 = wheelVelocity3_Real;
   interrupts();
 
-  motorPID1.Compute();
-  motorPID2.Compute();
-  motorPID3.Compute();
+  motorPID1.Compute(0);
+  motorPID2.Compute(0);
+  motorPID3.Compute(0);
 
   robotMotorWrite(Output1, Output2, Output3);
 }
