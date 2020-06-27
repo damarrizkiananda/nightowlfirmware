@@ -31,6 +31,10 @@ void inverseKinematics(int vx, int vy, int omega)
   wheelVelocity3_Target = -vy + L*omega;  
 }
 
+/* PID Selector */
+#define XY_PID
+
+#ifdef XY_PID
 void positionPID(int targetX, int targetY, int targetTheta)
 {
   noInterrupts();
@@ -73,6 +77,53 @@ void positionPID(int targetX, int targetY, int targetTheta)
   robotMotorWrite(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
   
 }
+#else
+void positionPID(int targetX, int targetY, int targetTheta)
+{
+  noInterrupts();
+  auto currentX = x_Real;
+  auto currentY = y_Real;
+  auto currentTheta = yaw_Real;
+  interrupts();
+
+  if(targetTheta-currentTheta < -180)
+  {
+    targetTheta+=360;
+  }
+  if(targetTheta-currentTheta > 180)
+  {
+    targetTheta-=360;
+  }
+
+  InputR = sqrt(currentX*currentX + currentY*currentY);
+  double phi = atan((targetY-currentY)/(targetX-currentX));
+  InputTheta = currentTheta;
+
+  SetpointR = sqrt(targetX*targetX + targetY*targetY);
+  SetpointTheta = targetTheta;
+
+  positionPIDR.Compute();
+  positionPIDTheta.Compute();
+
+  double OutputX = OutputR * sin(phi);
+  double OutputY = OutputR * cos(phi);
+
+  double sin_theta = sin(-currentTheta*TO_RAD);
+  double cos_theta = cos(-currentTheta*TO_RAD);
+  
+  double globalOutputX = OutputX*cos_theta - OutputY*sin_theta;
+  double globalOutputY = OutputX*sin_theta + OutputY*cos_theta;
+
+  inverseKinematics(globalOutputX, globalOutputY, OutputTheta);
+  
+  /* With Motor Velocity Control */
+  //motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
+
+  /* Without motor Velocity control */
+  robotMotorWrite(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
+  
+}
+#endif
 
 void motorPID(int target1, int target2, int target3)
 { 
