@@ -110,12 +110,17 @@ double KpX=20, KiX=1, KdX=0.001;
 PID positionPIDX(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
 
 double SetpointY, InputY, OutputY;
-double KpY=10, KiY=1, KdY=0.001;
+double KpY=20, KiY=1, KdY=0.001;
 PID positionPIDY(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
 
 double SetpointTheta, InputTheta, OutputTheta;
-double KpTheta=5, KiTheta=1, KdTheta=0.001;
+double KpTheta=20, KiTheta=1.5, KdTheta=0.001;
 PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta, KdTheta, DIRECT);
+
+
+double SetpointR, InputR, OutputR;
+double KpR=20, KiR=1, KdR=0.001;
+PID positionPIDR(&InputR, &OutputR, &SetpointR, KpR, KiR, KdR, DIRECT);
 
 /* Conversion Constants */
 #define TO_DEG    57.29577951308
