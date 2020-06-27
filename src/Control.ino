@@ -68,7 +68,7 @@ void positionPID(int targetX, int targetY, int targetTheta)
   double globalOutputX = OutputX*cos_theta - OutputY*sin_theta;
   double globalOutputY = OutputX*sin_theta + OutputY*cos_theta;
 
-  inverseKinematics(globalOutputX, globalOutputY, OutputTheta);
+  inverseKinematics(globalOutputX, -globalOutputY, OutputTheta);
   
   /* With Motor Velocity Control */
   //motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
@@ -114,7 +114,7 @@ void positionPID(int targetX, int targetY, int targetTheta)
   double globalOutputX = OutputX*cos_theta - OutputY*sin_theta;
   double globalOutputY = OutputX*sin_theta + OutputY*cos_theta;
 
-  inverseKinematics(globalOutputX, globalOutputY, OutputTheta);
+  inverseKinematics(globalOutputX, -globalOutputY, OutputTheta);
   
   /* With Motor Velocity Control */
   //motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
