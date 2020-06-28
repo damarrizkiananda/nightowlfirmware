@@ -34,6 +34,8 @@ void inverseKinematics(int vx, int vy, int omega)
 /* PID Selector */
 #define XY_PID
 
+#define MAX_VELOCITY 100
+
 #ifdef XY_PID
 void positionPID(int targetX, int targetY, int targetTheta)
 {
@@ -68,7 +70,17 @@ void positionPID(int targetX, int targetY, int targetTheta)
   double globalOutputX = OutputX*cos_theta - OutputY*sin_theta;
   double globalOutputY = OutputX*sin_theta + OutputY*cos_theta;
 
-  inverseKinematics(globalOutputX, -globalOutputY, OutputTheta);
+  double totalVelocity = globalOutputX*globalOutputX + globalOutputY*globalOutputY;
+  if(totalVelocity>MAX_VELOCITY)
+  {
+    globalOutputX = globalOutputX/totalVelocity;
+    globalOutputY = globalOutputY/totalVelocity;
+
+    globalOutputX = globalOutputX*MAX_VELOCITY;
+    globalOutputY = globalOutputY*MAX_VELOCITY;
+  }
+
+  inverseKinematics(globalOutputX, globalOutputY, OutputTheta);
   
   /* With Motor Velocity Control */
   //motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
