@@ -1,7 +1,11 @@
 
-void velocityToPWM(int velocity)
+int velocityToPWM(double velocity)
 {
+  int pwm;
   
+  pwm = velocity;
+
+  return pwm;
 }
 
 void motorWrite(int pwmInput, int pinA, int pinB)

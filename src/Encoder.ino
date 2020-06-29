@@ -14,23 +14,23 @@ void updateVelocityAndPosition()
   lastPulse2 = enc2.read()/4;
   lastPulse3 = enc3.read()/4;  
 
-  wheelVelocity1_Real = (double)encoderPulseDif1  * TWO_PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
-  wheelVelocity2_Real = (double)encoderPulseDif2  * TWO_PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
-  wheelVelocity3_Real = (double)encoderPulseDif3  * TWO_PI * 1000 / (PPR * TIMER_INTERRUPT_PERIOD);
+  wheelVelocity1_Real = (double)encoderPulseDif1  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
+  wheelVelocity2_Real = (double)encoderPulseDif2  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
+  wheelVelocity3_Real = (double)encoderPulseDif3  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
 
   getYawDeg();
   getPosition();
 
   robotVelocityX_Real = (x_Real-lastX) * 1000 / TIMER_INTERRUPT_PERIOD;
   robotVelocityY_Real = (y_Real-lastY) * 1000 / TIMER_INTERRUPT_PERIOD;
-  robotOmega_Real  = (yaw_Real-lastYaw) * TO_RAD * 1000 / TIMER_INTERRUPT_PERIOD;
+  robotOmega_Real     = (yaw_Real-lastYaw) * TO_RAD * 1000 / TIMER_INTERRUPT_PERIOD;
 
   lastX = x_Real;
   lastY = y_Real;
   lastYaw = yaw_Real;
 
   counter++;
-  if(counter>50)
+  if(counter>20)
   {
     ledState = !ledState;
     counter = 0;

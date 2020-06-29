@@ -209,143 +209,98 @@ void mainMain()
       copyOfX = x_Real;
       copyOfY = y_Real;
       copyOfYaw = yaw_Real;
+      auto vxCopy = robotVelocityX_Real;
+      auto vyCopy = robotVelocityY_Real;
+      auto omegaCopy = robotOmega_Real;
+      auto outputTheta = OutputTheta;
       interrupts();
-      Serial.print(copyOfX);Serial.print(";");
-      Serial.print(copyOfY);Serial.print(";");
-      Serial.println(copyOfYaw);
+      //Serial.print(copyOfX);Serial.print(";");
+      //Serial.print(copyOfY);Serial.print(";");
+      //Serial.print(copyOfYaw);Serial.print(";");
+      //Serial.print(vxCopy);Serial.print(";");
+      Serial.print(outputTheta);Serial.print(";");
+      Serial.println(omegaCopy*TO_DEG);
+
       printCounter = 0;
     }
+    
     if(path==1)
     {
-      positionPID(200,0,0);
-      if(abs(x_Real-200)<15)
+      positionPID(100,0,0);
+      if(abs(x_Real-100)<15)
       {
-        Serial.print("Target Reached");
         robotMotorWrite(0,0,0);
         path++;
       }
     }
-    else if(path==2)
+    if(path==2)
     {
-      positionPID(400,0,0);
-      if(abs(x_Real-400)<15)
+      positionPID(0,0,0);
+      if(abs(x_Real)<15)
       {
-        Serial.print("Target Reached");
         robotMotorWrite(0,0,0);
         path++;
       }
     }
-    else if(path==3)
-    {
-      positionPID(600,0,0);
-      if(abs(x_Real-600)<15)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==4)
-    {
-      positionPID(800,0,0);
-      if(abs(x_Real-800)<15)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==5)
-    {
-      positionPID(1000,0,0);
-      if(abs(x_Real-1000)<15)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==6)
-    {
-      positionPID(1150,0,0);
-      if(abs(x_Real-1150)<15)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==7)
-    {
-      positionPID(1345,0,0);
-      if(abs(x_Real-1345)<15)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==8) /* Belok */
-    {
-      positionPID(1345,0,-90);
-      if(abs(yaw_Real+90)<5)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==9)
-    {
-      positionPID(1345,-300,-90);
-      if(abs(y_Real+300)<15)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==10)
-    {
-      positionPID(1345,-600,-90);
-      if(abs(y_Real+600)<15)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==11)
-    {
-      positionPID(1345,-900,-90);
-      if(abs(y_Real+900)<15)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==12)
-    {
-      positionPID(1345,-1200,-90);
-      if(abs(y_Real+1200)<15)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==13)
-    {
-      positionPID(1345,-1200,120);
-      if(abs(yaw_Real-120)<5)
-      {
-        Serial.print("Target Reached");
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    else if(path==14) 
+    if(path==3)state = STATE_SEND_DATA;
+
+ 
+    
+    // else if(path==8) /* Belok */
+    // {
+    //   positionPID(1345,0,-90);
+    //   if(abs(yaw_Real+90)<5)
+    //   {
+    //     robotMotorWrite(0,0,0);
+    //     path++;
+    //   }
+    // }
+    // else if(path==9)
+    // {
+    //   positionPID(1345,-300,-90);
+    //   if(abs(y_Real+300)<15)
+    //   {
+    //     robotMotorWrite(0,0,0);
+    //     path++;
+    //   }
+    // }
+    // else if(path==10)
+    // {
+    //   positionPID(1345,-600,-90);
+    //   if(abs(y_Real+600)<15)
+    //   {
+    //     robotMotorWrite(0,0,0);
+    //     path++;
+    //   }
+    // }
+    // else if(path==11)
+    // {
+    //   positionPID(1345,-900,-90);
+    //   if(abs(y_Real+900)<15)
+    //   {
+    //     robotMotorWrite(0,0,0);
+    //     path++;
+    //   }
+    // }
+    // else if(path==12)
+    // {
+    //   positionPID(1345,-1200,-90);
+    //   if(abs(y_Real+1200)<15)
+    //   {
+    //     robotMotorWrite(0,0,0);
+    //     path++;
+    //   }
+    // }
+    // else if(path==13)
+    // {
+    //   positionPID(1345,-1200,120);
+    //   if(abs(yaw_Real-120)<5)
+    //   {
+    //     robotMotorWrite(0,0,0);
+    //     path++;
+    //   }
+    // }
+    if(path==8) 
     {
       state = STATE_SEND_DATA;
     }
@@ -372,13 +327,38 @@ void inverseCheck()
     inverseO = Serial.parseInt();
   }
 
-
-
   inverseKinematics(inverseX, inverseY, inverseO);
   Serial.print(wheelVelocity1_Target);
   Serial.print(" ");
   Serial.print(wheelVelocity2_Target);
   Serial.print(" ");
   Serial.println(wheelVelocity3_Target);
-  delay(10);  
+  delay(1000);  
+}
+
+int pwm;
+void wheelVelocityRegression()
+{
+  if(Serial.available())
+  {
+    pwm = Serial.parseInt();
+  }
+
+  robotMotorWrite(pwm,pwm,pwm);
+
+  if(millis()-CT>500)
+  {
+    noInterrupts();
+    double wheelSpeed1 = wheelVelocity1_Real;
+    double wheelSpeed2 = wheelVelocity2_Real;
+    double wheelSpeed3 = wheelVelocity3_Real;
+    interrupts();
+
+    Serial.print(pwm);
+    Serial.print(";"); Serial.print(wheelSpeed1);
+    Serial.print(";"); Serial.print(wheelSpeed2);
+    Serial.print(";"); Serial.println(wheelSpeed3);
+
+    CT = millis();
+  }
 }
