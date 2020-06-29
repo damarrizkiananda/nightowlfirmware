@@ -33,9 +33,9 @@ void inverseKinematics(int vx, int vy, int omega)
   wheelVelocity3_Target = -vy + L*omega;  
 
   /* Regression */
-  motorPwm1 = wheelVelocity1_Target/0.9722 + 13.724/0.9722;
-  motorPwm2 = wheelVelocity2_Target/0.9276 + 8.2996/0.9276;
-  motorPwm3 = wheelVelocity3_Target/0.9723 + 13.665/0.9723;
+  motorPwm1 = wheelVelocity1_Target/0.4617 + 2.2108/0.4617;
+  motorPwm2 = wheelVelocity2_Target/0.4275 + 1.544/0.4275;
+  motorPwm3 = wheelVelocity3_Target/0.4541 + 0.7405/0.4541;
 }
 
 /* PID Selector */
