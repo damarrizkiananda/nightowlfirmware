@@ -17,25 +17,29 @@
  * 
  */
 
-/* Distance between the center of the robot to the wheels in m */
-#define L 0.3
+void regression()
+{
+  motorPwm1 = wheelVelocity1_Target/0.4617 + 2.2108/0.4617;
+  motorPwm2 = wheelVelocity2_Target/0.4275 + 1.544/0.4275;
+  motorPwm3 = wheelVelocity3_Target/0.4541 + 0.7405/0.4541;
+}
+
+/* Distance between the center of the robot to the wheels in cm */
+#define L 30
 
 /* Important Angle in Degree */
 #define delta 60
 
-/* This function converts target vx, vy, & omega to wheel velocity (global variables) 
+/* This function converts target vx, vy, & omega to wheel linear velocity (global variables) 
  * and then converts wheel velocity to pwm
  */ 
 void inverseKinematics(int vx, int vy, int omega)
 {
-  wheelVelocity1_Target =  cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx + L*omega;
-  wheelVelocity2_Target = -(-cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx) + L*omega;
-  wheelVelocity3_Target = -vy + L*omega;  
+  wheelVelocity1_Target =  cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx + L*omega*TO_RAD;
+  wheelVelocity2_Target = -(-cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx) + L*omega*TO_RAD;
+  wheelVelocity3_Target = -vy + L*omega*TO_RAD;  
 
-  /* Regression */
-  motorPwm1 = wheelVelocity1_Target/0.4617 + 2.2108/0.4617;
-  motorPwm2 = wheelVelocity2_Target/0.4275 + 1.544/0.4275;
-  motorPwm3 = wheelVelocity3_Target/0.4541 + 0.7405/0.4541;
+  regression();
 }
 
 /* PID Selector */
@@ -182,11 +186,4 @@ void motorPID(int target1, int target2, int target3)
 float filter(float prevValue, float currentValue, int filter) {  
   float lengthFiltered =  (prevValue + (currentValue * filter)) / (filter + 1);  
   return lengthFiltered;  
-}
-
-double x_Target, y_Target, yaw_Target;
-
-void trajectoryControl()
-{
-
 }

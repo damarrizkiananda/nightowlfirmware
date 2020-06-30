@@ -116,7 +116,7 @@ double KpY=10, KiY=1, KdY=0.001;
 PID positionPIDY(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
 
 double SetpointTheta, InputTheta, OutputTheta;
-double KpTheta=20, KiTheta=1.2, KdTheta=0.001;
+double KpTheta=10, KiTheta=1.2, KdTheta=0.001;
 PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta, KdTheta, DIRECT);
 
 
@@ -135,11 +135,14 @@ PID positionPIDR(&InputR, &OutputR, &SetpointR, KpR, KiR, KdR, DIRECT);
  *       in cm
  */
 #define CIRCUMFERENCE 31.4159265
-#define PPR 1024
+#define PPR 1024.0
 #define DIST_PER_PULSE 0.03067961
 
 /* Max robot speed in cm/s */
-#define MAX_ROBOT_SPEED 120
+#define MAX_ROBOT_SPEED 75
+
+/* Max robot omega in deg/s */
+#define MAX_ROBOT_OMEGA 60
 
 void setup() 
 {
@@ -175,7 +178,7 @@ void setup()
 
   positionPIDX.SetMode(AUTOMATIC); positionPIDX.SetOutputLimits(-MAX_ROBOT_SPEED,MAX_ROBOT_SPEED); positionPIDX.SetSampleTime(50);
   positionPIDY.SetMode(AUTOMATIC); positionPIDY.SetOutputLimits(-MAX_ROBOT_SPEED,MAX_ROBOT_SPEED); positionPIDY.SetSampleTime(50);
-  positionPIDTheta.SetMode(AUTOMATIC); positionPIDTheta.SetOutputLimits(-150,150); positionPIDTheta.SetSampleTime(50);
+  positionPIDTheta.SetMode(AUTOMATIC); positionPIDTheta.SetOutputLimits(-MAX_ROBOT_OMEGA,MAX_ROBOT_OMEGA); positionPIDTheta.SetSampleTime(50);
 
   getYawDeg();
 }
@@ -191,8 +194,9 @@ void loop()
   // timerCheck();
   // odometryCheck();
   // inverseCheck();
-  mainMain();
+  // mainMain();
   // delay(10);
   // bluetooth_receive();
   // wheelVelocityRegression();
+  checkRobotOmega();
 }

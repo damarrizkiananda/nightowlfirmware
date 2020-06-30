@@ -213,11 +213,14 @@ void mainMain()
       auto vyCopy = robotVelocityY_Real;
       auto omegaCopy = robotOmega_Real;
       auto outputTheta = OutputTheta;
+      auto copyOfPwm1 = motorPwm1;
+      auto copyOfPwm2 = motorPwm2;
+      auto copyOfPwm3 = motorPwm3;
       interrupts();
       //Serial.print(copyOfX);Serial.print(";");
-      //Serial.print(copyOfY);Serial.print(";");
-      //Serial.print(copyOfYaw);Serial.print(";");
-      //Serial.print(vxCopy);Serial.print(";");
+      Serial.print(copyOfPwm1);Serial.print(";");
+      Serial.print(copyOfPwm2);Serial.print(";");
+      Serial.print(copyOfPwm3);Serial.print(";");
       Serial.print(outputTheta);Serial.print(";");
       Serial.println(omegaCopy*TO_DEG);
 
@@ -226,8 +229,8 @@ void mainMain()
     
     if(path==1)
     {
-      positionPID(100,0,0);
-      if(abs(x_Real-100)<15)
+      positionPID(0,0,-150);
+      if(abs(yaw_Real+100)<5)
       {
         robotMotorWrite(0,0,0);
         path++;
@@ -236,7 +239,7 @@ void mainMain()
     if(path==2)
     {
       positionPID(0,0,0);
-      if(abs(x_Real)<15)
+      if(abs(yaw_Real)<5)
       {
         robotMotorWrite(0,0,0);
         path++;
@@ -360,5 +363,30 @@ void wheelVelocityRegression()
     Serial.print(";"); Serial.println(wheelSpeed3);
 
     CT = millis();
+  }
+}
+
+int targetRobotOmega;
+
+void checkRobotOmega()
+{
+  if(Serial.available())
+  {
+    targetRobotOmega = Serial.parseInt();
+    targetRobotOmega = constrain(targetRobotOmega,0,60);
+  }
+
+  inverseKinematics(0,0,targetRobotOmega);
+  regression();
+  robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
+ 
+  if(millis()-CT>500)
+  {
+    noInterrupts();
+    auto copyOfOmega = robotOmega_Real;
+    interrupts();
+    Serial.print(targetRobotOmega); Serial.print(";");
+    Serial.println(copyOfOmega);  
+    CT = millis(); 
   }
 }
