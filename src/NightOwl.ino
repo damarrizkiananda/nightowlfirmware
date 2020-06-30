@@ -116,7 +116,7 @@ double KpY=7, KiY=1, KdY=0.001;
 PID positionPIDY(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
 
 double SetpointTheta, InputTheta, OutputTheta;
-double KpTheta=5, KiTheta=1.2, KdTheta=0.001;
+double KpTheta=0.9, KiTheta=0.3, KdTheta=0.001;
 PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta, KdTheta, DIRECT);
 
 
@@ -142,7 +142,7 @@ PID positionPIDR(&InputR, &OutputR, &SetpointR, KpR, KiR, KdR, DIRECT);
 #define MAX_ROBOT_SPEED 70
 
 /* Max robot omega in deg/s */
-#define MAX_ROBOT_OMEGA 40
+#define MAX_ROBOT_OMEGA 55
 
 void setup() 
 {

@@ -151,7 +151,7 @@ void odometryCheck()
     //getThetaBNO055Deg();
     Serial.print(" x:"); Serial.print(x_Real);
     Serial.print(" y:"); Serial.print(y_Real);
-    Serial.print(" yaw:"); Serial.print(theta_Real);
+    Serial.print(" theta:"); Serial.print(theta_Real);
     Serial.println();
     CT = millis();
     //sendDataPlease = false;
@@ -193,62 +193,71 @@ void mainMain()
   {
     if(velocityAndPositionUpdated == true)
     {
-      //printCounter++;
+      printCounter++;
       velocityAndPositionUpdated = false;
     }
-    if(printCounter>=4)
+    if(printCounter>=7)
     {
       noInterrupts();
       // copyOfX = x_Real;
       // copyOfY = y_Real;
       // copyOfYaw = theta_Real;
-      // auto vxCopy = robotVelocityX_Real;
-      // auto vyCopy = robotVelocityY_Real;
-      // auto omegaCopy = robotOmega_Real;
-      // auto outputTheta = OutputTheta;
-      // auto outputX = OutputX;
-      // auto outputY = OutputY;
+      auto vxCopy = robotVelocityX_Real;
+      auto vyCopy = robotVelocityY_Real;
+      auto omegaCopy = robotOmega_Real;
+      auto outputTheta = OutputTheta;
+      auto outputX = OutputX;
+      auto outputY = OutputY;
       // auto copyOfPwm1 = motorPwm1;
       // auto copyOfPwm2 = motorPwm2;
       // auto copyOfPwm3 = motorPwm3;
       interrupts();
       // Serial.print(copyOfX);Serial.print(";");
-      // Serial.print(vxCopy);Serial.print(";");
-      // Serial.print(vyCopy);Serial.print(";");
-      // Serial.print(outputTheta);Serial.print(";");
+      Serial.print(outputX);Serial.print(";");
+      Serial.print(outputY);Serial.print(";");
+      Serial.println(outputTheta);
 
       printCounter = 0;
     }
     
     if(path==1)
     {
-      positionPID(100,0,0);
-      if(abs(x_Real+100)<10)
+      positionPID(0,0,90);
+      if(abs(theta_Real-90)<5)
       {
         robotMotorWrite(0,0,0);
         path++;
       }
     }
-    if(path==2)
-    {
-      positionPID(100,0,-180);
-      if(abs(theta_Real)<5)
-      {
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
-    if(path==3)
-    {
-      positionPID(0,0,-180);
-      if(abs(x_Real)<10)
-      {
-        robotMotorWrite(0,0,0);
-        path++;
-      }
-    }
+    // if(path==2)
+    // {
+    //   positionPID(0,-200,0);
+    //   if(abs(y_Real+200)<10)
+    //   {
+    //     robotMotorWrite(0,0,0);
+    //     path++;
+    //   }
+    // }
+    // if(path==3)
+    // {
+    //   positionPID(0,0,0);
+    //   if(abs(y_Real)<10)
+    //   {
+    //     robotMotorWrite(0,0,0);
+    //     path++;
+    //   }
+    // }
+    // if(path==4)
+    // {
+    //   positionPID(0,0,-90);
+    //   if(abs(theta_Real+90)<5)
+    //   {
+    //     robotMotorWrite(0,0,0);
+    //     path++;
+    //   }
+    // }
 
-    if(path==4)state = STATE_SEND_DATA;
+    if(path==2)state = STATE_SEND_DATA;
 
  
     
