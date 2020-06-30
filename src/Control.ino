@@ -51,8 +51,8 @@ void positionPID(int targetX, int targetY, int targetTheta)
   noInterrupts();
   InputX = x_Real;
   InputY = y_Real;
-  InputTheta = yaw_Real;
-  auto currentTheta = yaw_Real;
+  InputTheta = theta_Real;
+  auto currentTheta = theta_Real;
   interrupts();
 
   if(targetTheta-currentTheta < -180)
@@ -104,7 +104,7 @@ void positionPID(int targetX, int targetY, int targetTheta)
   noInterrupts();
   auto currentX = x_Real;
   auto currentY = y_Real;
-  auto currentTheta = yaw_Real;
+  auto currentTheta = theta_Real;
   interrupts();
 
   if(targetTheta-currentTheta < -180)

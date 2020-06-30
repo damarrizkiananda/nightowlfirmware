@@ -110,7 +110,7 @@ void vibeCheck()
     Serial.print("   y:");
     Serial.print(y_Real);
     Serial.print("   yaw:");
-    Serial.println(yaw_Real);
+    Serial.println(theta_Real);
   }
 }
 
@@ -151,7 +151,7 @@ void odometryCheck()
     //getYawDeg();
     Serial.print(" x:"); Serial.print(x_Real);
     Serial.print(" y:"); Serial.print(y_Real);
-    Serial.print(" yaw:"); Serial.print(yaw_Real);
+    Serial.print(" yaw:"); Serial.print(theta_Real);
     Serial.println();
     CT = millis();
     //sendDataPlease = false;
@@ -208,7 +208,7 @@ void mainMain()
       noInterrupts();
       copyOfX = x_Real;
       copyOfY = y_Real;
-      copyOfYaw = yaw_Real;
+      copyOfYaw = theta_Real;
       auto vxCopy = robotVelocityX_Real;
       auto vyCopy = robotVelocityY_Real;
       auto omegaCopy = robotOmega_Real;
@@ -230,7 +230,7 @@ void mainMain()
     if(path==1)
     {
       positionPID(0,0,-150);
-      if(abs(yaw_Real+100)<5)
+      if(abs(theta_Real+100)<5)
       {
         robotMotorWrite(0,0,0);
         path++;
@@ -239,7 +239,7 @@ void mainMain()
     if(path==2)
     {
       positionPID(0,0,0);
-      if(abs(yaw_Real)<5)
+      if(abs(theta_Real)<5)
       {
         robotMotorWrite(0,0,0);
         path++;
@@ -252,7 +252,7 @@ void mainMain()
     // else if(path==8) /* Belok */
     // {
     //   positionPID(1345,0,-90);
-    //   if(abs(yaw_Real+90)<5)
+    //   if(abs(theta_Real+90)<5)
     //   {
     //     robotMotorWrite(0,0,0);
     //     path++;
@@ -297,7 +297,7 @@ void mainMain()
     // else if(path==13)
     // {
     //   positionPID(1345,-1200,120);
-    //   if(abs(yaw_Real-120)<5)
+    //   if(abs(theta_Real-120)<5)
     //   {
     //     robotMotorWrite(0,0,0);
     //     path++;
@@ -313,7 +313,7 @@ void mainMain()
   {
     Serial.print(" x:"); Serial.print(x_Real);
     Serial.print(" y:"); Serial.print(y_Real);
-    Serial.print(" yaw:"); Serial.println(yaw_Real);
+    Serial.print(" yaw:"); Serial.println(theta_Real);
     state = STATE_WAIT;
     Serial.println("Waiting for new data");
   }

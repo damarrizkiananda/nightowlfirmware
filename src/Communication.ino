@@ -131,7 +131,7 @@ void send_to_laptop()
   absRobotVelocityY_Real = (uint16_t)(abs(robotVelocityY_Copy));
   absRobotOmega_Real = (uint16_t)(abs(robotOmega_Copy));
 
-  yaw100 = (uint16_t)(yaw_Real*100);
+  yaw100 = (uint16_t)(theta_Real*100);
   
   uint8_t data[14] = {(uint8_t)(absX>>8), (uint8_t)(absX&0x00FF), (uint8_t)(absY>>8), (uint8_t)(absY&0x00FF), (uint8_t)(absRobotVelocityX_Real>>8), (uint8_t)(absRobotVelocityX_Real&0x00FF), 
                       (uint8_t)(absRobotVelocityY_Real>>8), (uint8_t)(absRobotVelocityY_Real&0x00FF), (uint8_t)(absRobotOmega_Real>>8), (uint8_t)(absRobotOmega_Real&0x00FF), parity, 
