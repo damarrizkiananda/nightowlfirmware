@@ -28,7 +28,7 @@ void NightOwlMainOld()
   /* Send data every 100ms */
   if(sendDataPlease)
   {
-    getYawDeg();
+    //getThetaBNO055Deg();
     send_to_laptop();
   }  
   
@@ -96,7 +96,7 @@ void vibeCheck()
   }
 
   if(sendDataPlease){
-    getYawDeg();
+    //getThetaBNO055Deg();
     //positionPID(uPwm1, uPwm2, 0);
     //motorPID(uPwm1, -uPwm1, 0);
     sendDataPlease = false; 
@@ -148,7 +148,7 @@ void odometryCheck()
 {
   if(millis()-CT>200)
   {
-    //getYawDeg();
+    //getThetaBNO055Deg();
     Serial.print(" x:"); Serial.print(x_Real);
     Serial.print(" y:"); Serial.print(y_Real);
     Serial.print(" yaw:"); Serial.print(theta_Real);
@@ -177,60 +177,53 @@ void mainMain()
     if(BLUETOOTH_SERIAL.available())
     {
       bluetoothX = BLUETOOTH_SERIAL.parseInt();
-      //bluetoothY = BLUETOOTH_SERIAL.parseInt();
-      //bluetoothO = BLUETOOTH_SERIAL.parseInt();
-      //btime = BLUETOOTH_SERIAL.parseInt();
-      //bc = millis();
       Serial.println("Going");
       state = STATE_GO;
 
     }
 
-  // if(Serial.available())
-  // {
-  //   bluetoothX = Serial.parseInt();
-  //   bluetoothY = Serial.parseInt();
-  //   bluetoothO = Serial.parseInt();
-  //   btime = Serial.parseInt();
-  //   bc = millis();
-  //   go = true;
-  // }
+    if(Serial.available())
+    {
+      bluetoothX = Serial.parseInt();
+      Serial.println("Going");
+      state = STATE_GO;
+    }
   }
   else if (state==STATE_GO)
   {
     if(velocityAndPositionUpdated == true)
     {
-      printCounter++;
+      //printCounter++;
       velocityAndPositionUpdated = false;
     }
     if(printCounter>=4)
     {
       noInterrupts();
-      copyOfX = x_Real;
-      copyOfY = y_Real;
-      copyOfYaw = theta_Real;
-      auto vxCopy = robotVelocityX_Real;
-      auto vyCopy = robotVelocityY_Real;
-      auto omegaCopy = robotOmega_Real;
-      auto outputTheta = OutputTheta;
-      auto copyOfPwm1 = motorPwm1;
-      auto copyOfPwm2 = motorPwm2;
-      auto copyOfPwm3 = motorPwm3;
+      // copyOfX = x_Real;
+      // copyOfY = y_Real;
+      // copyOfYaw = theta_Real;
+      // auto vxCopy = robotVelocityX_Real;
+      // auto vyCopy = robotVelocityY_Real;
+      // auto omegaCopy = robotOmega_Real;
+      // auto outputTheta = OutputTheta;
+      // auto outputX = OutputX;
+      // auto outputY = OutputY;
+      // auto copyOfPwm1 = motorPwm1;
+      // auto copyOfPwm2 = motorPwm2;
+      // auto copyOfPwm3 = motorPwm3;
       interrupts();
-      //Serial.print(copyOfX);Serial.print(";");
-      Serial.print(copyOfPwm1);Serial.print(";");
-      Serial.print(copyOfPwm2);Serial.print(";");
-      Serial.print(copyOfPwm3);Serial.print(";");
-      Serial.print(outputTheta);Serial.print(";");
-      Serial.println(omegaCopy*TO_DEG);
+      // Serial.print(copyOfX);Serial.print(";");
+      // Serial.print(vxCopy);Serial.print(";");
+      // Serial.print(vyCopy);Serial.print(";");
+      // Serial.print(outputTheta);Serial.print(";");
 
       printCounter = 0;
     }
     
     if(path==1)
     {
-      positionPID(0,0,-150);
-      if(abs(theta_Real+100)<5)
+      positionPID(100,0,0);
+      if(abs(x_Real+100)<10)
       {
         robotMotorWrite(0,0,0);
         path++;
@@ -238,14 +231,24 @@ void mainMain()
     }
     if(path==2)
     {
-      positionPID(0,0,0);
+      positionPID(100,0,-180);
       if(abs(theta_Real)<5)
       {
         robotMotorWrite(0,0,0);
         path++;
       }
     }
-    if(path==3)state = STATE_SEND_DATA;
+    if(path==3)
+    {
+      positionPID(0,0,-180);
+      if(abs(x_Real)<10)
+      {
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+
+    if(path==4)state = STATE_SEND_DATA;
 
  
     

@@ -18,13 +18,14 @@ void updateVelocityAndPosition()
   wheelVelocity2_Real = (double)encoderPulseDif2  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
   wheelVelocity3_Real = (double)encoderPulseDif3  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
 
-  getYawDeg();
+  getThetaBNO055Deg();
+  theta_Real = theta_BNO055;
   getPosition();
 
   robotVelocityX_Real = (x_Real-lastX) * 1000 / TIMER_INTERRUPT_PERIOD;
   robotVelocityY_Real = (y_Real-lastY) * 1000 / TIMER_INTERRUPT_PERIOD;
-  // robotOmega_Real     = (theta_Real-lastYaw) * TO_RAD * 1000 / TIMER_INTERRUPT_PERIOD;
-  robotOmega_Real     = (theta_Real-lastYaw) * 1000 / TIMER_INTERRUPT_PERIOD;
+  robotOmega_Real     = (theta_Real-lastYaw) * TO_RAD * 1000 / TIMER_INTERRUPT_PERIOD;
+  // robotOmega_Real     = (theta_Real-lastYaw) * 1000 / TIMER_INTERRUPT_PERIOD;
 
 
   lastX = x_Real;
