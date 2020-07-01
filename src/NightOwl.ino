@@ -108,15 +108,15 @@ PID omegaPID(&InputOmega, &OutputOmega, &SetpointOmega, KpOmega, KiOmega, KdOmeg
 
 /* Robot Position Control */
 double SetpointX, InputX, OutputX;
-double KpX=7, KiX=1, KdX=0.001;
+double KpX=4, KiX=0.1, KdX=0.001;
 PID positionPIDX(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
 
 double SetpointY, InputY, OutputY;
-double KpY=7, KiY=1, KdY=0.001;
+double KpY=4, KiY=0.1, KdY=0.001;
 PID positionPIDY(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
 
 double SetpointTheta, InputTheta, OutputTheta;
-double KpTheta=0.9, KiTheta=0.3, KdTheta=0.001;
+double KpTheta=4.5, KiTheta=0.5, KdTheta=0.001;
 PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta, KdTheta, DIRECT);
 
 
@@ -139,10 +139,10 @@ PID positionPIDR(&InputR, &OutputR, &SetpointR, KpR, KiR, KdR, DIRECT);
 #define DIST_PER_PULSE 0.03067961
 
 /* Max robot speed in cm/s */
-#define MAX_ROBOT_SPEED 70
+#define MAX_ROBOT_SPEED 75
 
 /* Max robot omega in deg/s */
-#define MAX_ROBOT_OMEGA 55
+#define MAX_ROBOT_OMEGA 75
 
 void setup() 
 {
