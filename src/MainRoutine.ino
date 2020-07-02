@@ -255,21 +255,47 @@ void goToDestination()
     }
     if(path==3)
     {
-      positionPID(TARGET_X,0,-90);
-      if(abs(theta_Real+90)<5)
+      if(TARGET_Y < 0)
       {
-        robotMotorWrite(0,0,0);
-        path++;
+        positionPID(TARGET_X,0,-90);
+        if(abs(theta_Real+90)<5)
+        {
+          robotMotorWrite(0,0,0);
+          path++;
+        }
       }
+      else
+      {
+        positionPID(TARGET_X,0,90);
+        if(abs(theta_Real-90)<5)
+        {
+          robotMotorWrite(0,0,0);
+          path++;
+        }
+      }
+      
     }
     if(path==4)
     {
-      positionPID(TARGET_X,TARGET_Y,-90);
-      if(abs(y_Real-TARGET_Y)<5)
+      if(TARGET_Y < 0)
       {
-        robotMotorWrite(0,0,0);
-        path++;
+        positionPID(TARGET_X,TARGET_Y,-90);
+        if(abs(y_Real-TARGET_Y)<5)
+        {
+          robotMotorWrite(0,0,0);
+          path++;
+        }
       }
+      else
+      {
+        positionPID(TARGET_X,TARGET_Y,90);
+        if(abs(y_Real-TARGET_Y)<5)
+        {
+          robotMotorWrite(0,0,0);
+          path++;
+        }
+      }
+      
     }
     if(path==5)
     {
@@ -295,21 +321,48 @@ void goToDestination()
 
     if(path==7)
     {
-      positionPID(TARGET_X,TARGET_Y,90);
-      if(abs(theta_Real-90)<5)
+      if(TARGET_Y < 0)
       {
-        robotMotorWrite(0,0,0);
-        path++;
+        positionPID(TARGET_X,TARGET_Y,90);
+        if(abs(theta_Real-90)<5)
+        {
+          robotMotorWrite(0,0,0);
+          path++;
+        }   
       }
+      else
+      {
+        positionPID(TARGET_X,TARGET_Y,-90);
+        if(abs(theta_Real+90)<5)
+        {
+          robotMotorWrite(0,0,0);
+          path++;
+        }
+      }
+      
+      
     }
     if(path==8)
     {
-      positionPID(TARGET_X,0,90);
-      if(abs(y_Real)<5 && abs(x_Real-TARGET_X)<5)
+      if(TARGET_Y < 0)
       {
-        robotMotorWrite(0,0,0);
-        path++;
+        positionPID(TARGET_X,0,90);
+        if(abs(y_Real)<5 && abs(x_Real-TARGET_X)<5)
+        {
+          robotMotorWrite(0,0,0);
+          path++;
+        }
       }
+      else
+      {
+        positionPID(TARGET_X,0,-90);
+        if(abs(y_Real)<5 && abs(x_Real-TARGET_X)<5)
+        {
+          robotMotorWrite(0,0,0);
+          path++;
+        }
+      }
+        
     }
     if(path==9)
     {
