@@ -24,10 +24,10 @@ double x_Real, y_Real, theta_Real, theta_BNO055, theta_Odo;
 double robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target;
 double robotVelocityX_Real, robotVelocityY_Real, robotOmega_Real;
 
-#define TIMER_INTERRUPT_PERIOD 100.0
+#define TIMER_INTERRUPT_PERIOD 50.0
 
 /* Set the delay between fresh samples */
-uint16_t BNO055_SAMPLERATE_DELAY_MS = 10;
+uint16_t BNO055_SAMPLERATE_DELAY_MS = 25;
 Adafruit_BNO055 bno = Adafruit_BNO055(55,0x29,&Wire);
 sensors_event_t orientationData;
 
@@ -108,15 +108,15 @@ PID omegaPID(&InputOmega, &OutputOmega, &SetpointOmega, KpOmega, KiOmega, KdOmeg
 
 /* Robot Position Control */
 double SetpointX, InputX, OutputX;
-double KpX=4, KiX=0.1, KdX=0.001;
+double KpX=15, KiX=0.1, KdX=0.001;
 PID positionPIDX(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
 
 double SetpointY, InputY, OutputY;
-double KpY=4, KiY=0.1, KdY=0.001;
+double KpY=15, KiY=0.1, KdY=0.001;
 PID positionPIDY(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
 
 double SetpointTheta, InputTheta, OutputTheta;
-double KpTheta=4.5, KiTheta=0.5, KdTheta=0.001;
+double KpTheta=5, KiTheta=0.5, KdTheta=0.001;
 PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta, KdTheta, DIRECT);
 
 
@@ -135,14 +135,16 @@ PID positionPIDR(&InputR, &OutputR, &SetpointR, KpR, KiR, KdR, DIRECT);
  *       in cm
  */
 #define CIRCUMFERENCE 31.4159265
-#define PPR 1024.0
-#define DIST_PER_PULSE 0.03067961
+#define PPR 4096.0
+#define DIST_PER_PULSE 0.0076699025
+// #define PPR 1024.0
+// #define DIST_PER_PULSE 0.03067961
 
 /* Max robot speed in cm/s */
 #define MAX_ROBOT_SPEED 75
 
 /* Max robot omega in deg/s */
-#define MAX_ROBOT_OMEGA 75
+#define MAX_ROBOT_OMEGA 60
 
 void setup() 
 {
@@ -194,7 +196,8 @@ void loop()
   // timerCheck();
   // odometryCheck();
   // inverseCheck();
-  mainMain();
+  // mainMain();
+  goToDestination();
   // delay(10);
   // bluetooth_receive();
   // wheelVelocityRegression();

@@ -168,8 +168,13 @@ unsigned long bc, btime;
 int state = STATE_WAIT;
 int path = 1;
 int printCounter;
+#define TARGET_X 1345 
+#define TARGET_Y (-1200)
 
-void mainMain()
+// #define TARGET_X 100
+// #define TARGET_Y (-100)
+
+void goToDestination()
 { 
   if(state==STATE_WAIT)
   {
@@ -192,7 +197,7 @@ void mainMain()
   {
     if(velocityAndPositionUpdated == true)
     {
-      printCounter++;
+      // printCounter++;
       velocityAndPositionUpdated = false;
     }
     if(printCounter>=7)
@@ -229,26 +234,29 @@ void mainMain()
     
     if(path==1)
     {
-      positionPID(100,0,0);
-      if(abs(x_Real-100)<5)
+      positionPID(TARGET_X,0,0);
+      if(abs(x_Real-TARGET_X)<5 && abs(y_Real)<5)
       {
+        Serial.println("Destination 1 Reached");
+        Serial.print(" x:"); Serial.print(x_Real);
+        Serial.print(" y:"); Serial.print(y_Real);
+        Serial.print(" yaw:"); Serial.println(theta_Real);
         robotMotorWrite(0,0,0);
         path++;
       }
     }
     if(path==2)
     {
-      positionPID(100,0,-90);
-      if(abs(theta_Real+90)<5)
+      if(Serial.available())
       {
-        robotMotorWrite(0,0,0);
+        auto nextPath = Serial.parseInt();
         path++;
       }
     }
     if(path==3)
     {
-      positionPID(100,-100,-90);
-      if(abs(y_Real+100)<5)
+      positionPID(TARGET_X,0,-90);
+      if(abs(theta_Real+90)<5)
       {
         robotMotorWrite(0,0,0);
         path++;
@@ -256,8 +264,8 @@ void mainMain()
     }
     if(path==4)
     {
-      positionPID(100,-100,90);
-      if(abs(theta_Real-90)<5)
+      positionPID(TARGET_X,TARGET_Y,-90);
+      if(abs(y_Real-TARGET_Y)<5)
       {
         robotMotorWrite(0,0,0);
         path++;
@@ -265,16 +273,69 @@ void mainMain()
     }
     if(path==5)
     {
-      positionPID(100,0,90);
-      if(abs(y_Real)<5)
+      positionPID(TARGET_X,TARGET_Y,0);
+      if(abs(theta_Real)<5)
       {
+        Serial.println("Destination 2 Reached");
+        Serial.print(" x:"); Serial.print(x_Real);
+        Serial.print(" y:"); Serial.print(y_Real);
+        Serial.print(" yaw:"); Serial.println(theta_Real);
         robotMotorWrite(0,0,0);
         path++;
       }
     }
     if(path==6)
     {
-      positionPID(100,0,180);
+      if(Serial.available())
+      {
+        auto nextPath = Serial.parseInt();
+        path++;
+      }
+    }
+
+    if(path==7)
+    {
+      positionPID(TARGET_X,TARGET_Y,90);
+      if(abs(theta_Real-90)<5)
+      {
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    if(path==8)
+    {
+      positionPID(TARGET_X,0,90);
+      if(abs(y_Real)<5 && abs(x_Real-TARGET_X)<5)
+      {
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+    if(path==9)
+    {
+      positionPID(TARGET_X,0,0);
+      if(abs(y_Real)<5 && abs(x_Real-TARGET_X)<5 && abs(theta_Real)<5)
+      {
+        Serial.println("Destination 3 Reached");
+        Serial.print(" x:"); Serial.print(x_Real);
+        Serial.print(" y:"); Serial.print(y_Real);
+        Serial.print(" yaw:"); Serial.println(theta_Real);
+        robotMotorWrite(0,0,0);
+        path++;
+      }
+    }
+
+    if(path==10)
+    {
+      if(Serial.available())
+      {
+        auto nextPath = Serial.parseInt();
+        path++;
+      }
+    }
+    if(path==11)
+    {
+      positionPID(TARGET_X,0,180);
       if(abs(theta_Real-180)<5)
       {
         robotMotorWrite(0,0,0);
@@ -286,7 +347,7 @@ void mainMain()
         path++;
       }
     }
-    if(path==7)
+    if(path==12)
     {
       positionPID(0,0,180);
       if(abs(x_Real)<5)
@@ -295,78 +356,103 @@ void mainMain()
         path++;
       }
     }
-    if(path==8)
+    if(path==13)
     {
       positionPID(0,0,0);
-      if(abs(theta_Real)<5)
+      if(abs(theta_Real)<5 && abs(x_Real)<5 && abs(y_Real)<5)
       {
         robotMotorWrite(0,0,0);
         path++;
       }
     }
 
-    if(path==9)state = STATE_SEND_DATA;
+    if(path==14)state = STATE_SEND_DATA;
 
- 
+   // TD 1345, -1200
+  }
+
+  else if(state==STATE_SEND_DATA)
+  {
+    Serial.print(" x:"); Serial.print(x_Real);
+    Serial.print(" y:"); Serial.print(y_Real);
+    Serial.print(" yaw:"); Serial.println(theta_Real);
+    state = STATE_WAIT;
+    Serial.println("Waiting for new data");
+  }
+}
+
+void mainMain()
+{ 
+  if(state==STATE_WAIT)
+  {
+    if(BLUETOOTH_SERIAL.available())
+    {
+      bluetoothX = BLUETOOTH_SERIAL.parseInt();
+      Serial.println("Going");
+      CT = millis();
+      state = STATE_GO;
+    }
+
+    if(Serial.available())
+    {
+      bluetoothX = Serial.parseInt();
+      Serial.println("Going");
+      CT = millis();
+      state = STATE_GO;
+    }
+  }
+  else if (state==STATE_GO)
+  {
+    if(velocityAndPositionUpdated == true)
+    {
+      printCounter++;
+      velocityAndPositionUpdated = false;
+    }
+    if(printCounter>=7)
+    {
+      noInterrupts();
+      auto copyOfX = x_Real;
+      auto copyOfY = y_Real;
+      auto copyOfTheta = theta_Real;
+      auto vxCopy = robotVelocityX_Real;
+      auto vyCopy = robotVelocityY_Real;
+      auto omegaCopy = robotOmega_Real;
+      auto outputTheta = OutputTheta;
+      auto outputX = OutputX;
+      auto outputY = OutputY;
+      // auto copyOfPwm1 = motorPwm1;
+      // auto copyOfPwm2 = motorPwm2;
+      // auto copyOfPwm3 = motorPwm3;
+      interrupts();
+      
+      // Serial.print(vxCopy);Serial.print(";");
+      // Serial.print(vyCopy);Serial.print(";");
+      // Serial.println(omegaCopy);
+
+      // Serial.print(outputX);Serial.print(";");
+      // Serial.print(outputY);Serial.print(";");
+      // Serial.println(outputTheta);
+
+      Serial.print(millis());Serial.print(";");
+      Serial.print(copyOfX);Serial.print(";");
+      Serial.print(copyOfY);Serial.print(";");
+      Serial.println(copyOfTheta);
+
+      printCounter = 0;
+    }
     
-    // else if(path==8) /* Belok */
-    // {
-    //   positionPID(1345,0,-90);
-    //   if(abs(theta_Real+90)<5)
-    //   {
-    //     robotMotorWrite(0,0,0);
-    //     path++;
-    //   }
-    // }
-    // else if(path==9)
-    // {
-    //   positionPID(1345,-300,-90);
-    //   if(abs(y_Real+300)<15)
-    //   {
-    //     robotMotorWrite(0,0,0);
-    //     path++;
-    //   }
-    // }
-    // else if(path==10)
-    // {
-    //   positionPID(1345,-600,-90);
-    //   if(abs(y_Real+600)<15)
-    //   {
-    //     robotMotorWrite(0,0,0);
-    //     path++;
-    //   }
-    // }
-    // else if(path==11)
-    // {
-    //   positionPID(1345,-900,-90);
-    //   if(abs(y_Real+900)<15)
-    //   {
-    //     robotMotorWrite(0,0,0);
-    //     path++;
-    //   }
-    // }
-    // else if(path==12)
-    // {
-    //   positionPID(1345,-1200,-90);
-    //   if(abs(y_Real+1200)<15)
-    //   {
-    //     robotMotorWrite(0,0,0);
-    //     path++;
-    //   }
-    // }
-    // else if(path==13)
-    // {
-    //   positionPID(1345,-1200,120);
-    //   if(abs(theta_Real-120)<5)
-    //   {
-    //     robotMotorWrite(0,0,0);
-    //     path++;
-    //   }
-    // }
-    // if(path==8) 
-    // {
-    //   state = STATE_SEND_DATA;
-    // }
+    if(path==1)
+    {
+      positionPID(0,0,90);
+      if(millis()-CT>8000)
+      path++;
+    }
+
+    if(path==2)
+    {
+      robotMotorWrite(0,0,0);
+      state = STATE_SEND_DATA;
+    }
   }
 
   else if(state==STATE_SEND_DATA)

@@ -6,13 +6,13 @@ bool ledState;
 
 void updateVelocityAndPosition()
 {
-  encoderPulseDif1 = (int32_t)(enc1.read()/4-lastPulse1);
-  encoderPulseDif2 = (int32_t)(enc2.read()/4-lastPulse2);
-  encoderPulseDif3 = (int32_t)(enc3.read()/4-lastPulse3);
+  encoderPulseDif1 = (int32_t)(enc1.read()-lastPulse1);
+  encoderPulseDif2 = (int32_t)(enc2.read()-lastPulse2);
+  encoderPulseDif3 = (int32_t)(enc3.read()-lastPulse3);
 
-  lastPulse1 = enc1.read()/4;
-  lastPulse2 = enc2.read()/4;
-  lastPulse3 = enc3.read()/4;  
+  lastPulse1 = enc1.read();
+  lastPulse2 = enc2.read();
+  lastPulse3 = enc3.read();  
 
   wheelVelocity1_Real = (double)encoderPulseDif1  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
   wheelVelocity2_Real = (double)encoderPulseDif2  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
@@ -22,9 +22,9 @@ void updateVelocityAndPosition()
   theta_Real = theta_BNO055;
   getPosition();
 
-  robotVelocityX_Real = (x_Real-lastX) * 1000 / TIMER_INTERRUPT_PERIOD;
-  robotVelocityY_Real = (y_Real-lastY) * 1000 / TIMER_INTERRUPT_PERIOD;
-  robotOmega_Real     = (theta_Real-lastYaw) * TO_RAD * 1000 / TIMER_INTERRUPT_PERIOD;
+  robotVelocityX_Real = (x_Real-lastX) * 1000.0 / TIMER_INTERRUPT_PERIOD;
+  robotVelocityY_Real = (y_Real-lastY) * 1000.0 / TIMER_INTERRUPT_PERIOD;
+  robotOmega_Real     = (theta_Real-lastYaw) * TO_RAD * 1000.0 / TIMER_INTERRUPT_PERIOD;
   // robotOmega_Real     = (theta_Real-lastYaw) * 1000 / TIMER_INTERRUPT_PERIOD;
 
 
