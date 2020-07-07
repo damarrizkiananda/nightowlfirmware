@@ -169,10 +169,14 @@ int state = STATE_WAIT;
 int path = 1;
 int printCounter;
 #define TARGET_X 1345 
-#define TARGET_Y (-1200)
+#define TARGET_Y (-2400)
 
-// #define TARGET_X 100
-// #define TARGET_Y (-100)
+/*
+  TD = -1200
+  TTT = 300
+  Toilet = -2400
+
+*/
 
 void goToDestination()
 { 
@@ -461,7 +465,7 @@ void mainMain()
       printCounter++;
       velocityAndPositionUpdated = false;
     }
-    if(printCounter>=7)
+    if(printCounter>=5)
     {
       noInterrupts();
       auto copyOfX = x_Real;
@@ -478,17 +482,17 @@ void mainMain()
       // auto copyOfPwm3 = motorPwm3;
       interrupts();
       
-      // Serial.print(vxCopy);Serial.print(";");
-      // Serial.print(vyCopy);Serial.print(";");
+      Serial.print(vxCopy);Serial.print(";");
+      Serial.print(vyCopy);Serial.print(";");
       // Serial.println(omegaCopy);
 
       // Serial.print(outputX);Serial.print(";");
       // Serial.print(outputY);Serial.print(";");
       // Serial.println(outputTheta);
 
-      Serial.print(millis());Serial.print(";");
-      Serial.print(copyOfX);Serial.print(";");
-      Serial.print(copyOfY);Serial.print(";");
+      // Serial.print(millis());Serial.print(";");
+      // Serial.print(copyOfX);Serial.print(";");
+      // Serial.print(copyOfY);Serial.print(";");
       Serial.println(copyOfTheta);
 
       printCounter = 0;
@@ -496,8 +500,8 @@ void mainMain()
     
     if(path==1)
     {
-      positionPID(0,0,90);
-      if(millis()-CT>8000)
+      positionPID(150,0,0);
+      if(abs(x_Real-150)<5)
       path++;
     }
 

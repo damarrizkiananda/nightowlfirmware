@@ -116,7 +116,7 @@ double KpY=15, KiY=0.1, KdY=0.001;
 PID positionPIDY(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
 
 double SetpointTheta, InputTheta, OutputTheta;
-double KpTheta=5, KiTheta=0.5, KdTheta=0.001;
+double KpTheta=5, KiTheta=3.6, KdTheta=0.001;
 PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta, KdTheta, DIRECT);
 
 
@@ -196,8 +196,8 @@ void loop()
   // timerCheck();
   // odometryCheck();
   // inverseCheck();
-  // mainMain();
-  goToDestination();
+  mainMain();
+  // goToDestination();
   // delay(10);
   // bluetooth_receive();
   // wheelVelocityRegression();
