@@ -18,7 +18,7 @@ double wheelVelocity1_Real, wheelVelocity2_Real, wheelVelocity3_Real;
 double wheelVelocity1_Target, wheelVelocity2_Target, wheelVelocity3_Target;
 
 /* Robot Position */
-double x_Real, y_Real, theta_Real, theta_BNO055, theta_Odo;
+double x_Real, y_Real, theta_Real, theta_BNO055, theta_Odo, theta360;
 
 /* Robot Velocity */
 double robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target;
@@ -135,10 +135,10 @@ PID positionPIDR(&InputR, &OutputR, &SetpointR, KpR, KiR, KdR, DIRECT);
  *       in cm
  */
 #define CIRCUMFERENCE 31.4159265
-#define PPR 4096.0
-#define DIST_PER_PULSE 0.0076699025
-// #define PPR 1024.0
-// #define DIST_PER_PULSE 0.03067961
+// #define PPR 4096.0
+// #define DIST_PER_PULSE 0.0076699025
+#define PPR 1024.0
+#define DIST_PER_PULSE 0.03067961
 
 /* Max robot speed in cm/s */
 #define MAX_ROBOT_SPEED 75

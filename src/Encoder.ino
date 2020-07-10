@@ -6,13 +6,13 @@ bool ledState;
 
 void updateVelocityAndPosition()
 {
-  encoderPulseDif1 = (int32_t)(enc1.read()-lastPulse1);
-  encoderPulseDif2 = (int32_t)(enc2.read()-lastPulse2);
-  encoderPulseDif3 = (int32_t)(enc3.read()-lastPulse3);
+  encoderPulseDif1 = (int32_t)(enc1.read()/4-lastPulse1);
+  encoderPulseDif2 = (int32_t)(enc2.read()/4-lastPulse2);
+  encoderPulseDif3 = (int32_t)(enc3.read()/4-lastPulse3);
 
-  lastPulse1 = enc1.read();
-  lastPulse2 = enc2.read();
-  lastPulse3 = enc3.read();  
+  lastPulse1 = enc1.read()/4;
+  lastPulse2 = enc2.read()/4;
+  lastPulse3 = enc3.read()/4;  
 
   wheelVelocity1_Real = (double)encoderPulseDif1  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
   wheelVelocity2_Real = (double)encoderPulseDif2  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);

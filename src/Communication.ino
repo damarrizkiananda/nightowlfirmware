@@ -54,7 +54,7 @@ void serial_send_packets(uint8_t* data, byte len){
     #ifdef USE_EXTRA_PROTOCOL
     if(data[i]==SERIAL_HEAD||data[i]==SERIAL_TAIL)data[i]++;
     #endif
-    Serial.write(data[i]+1);
+    Serial.write(data[i]);
   }
   Serial.write(SERIAL_TAIL);
 }
@@ -92,15 +92,17 @@ void serial_send( int32_t data){
 
 void send_to_laptop()
 {
-  uint8_t robotVelocityX_Parity, robotVelocityY_Parity, robotOmega_Parity, x_Parity, y_Parity, parity;
-  uint16_t yaw100;
+  uint8_t robotVelocityX_Parity, robotVelocityY_Parity, robotOmega_Parity, 
+          x_Parity, y_Parity, enc1_Parity, enc2_Parity, enc3_Parity,
+          parity;
+  uint16_t thetaTimes100;
 
   /* Without parity */
   uint16_t absRobotVelocityX_Real, absRobotVelocityY_Real, absRobotOmega_Real;
   uint16_t absX, absY;
 
   /* Copy */
-  uint16_t x_Copy, y_Copy, robotVelocityX_Copy, robotVelocityY_Copy, robotOmega_Copy;
+  uint16_t x_Copy, y_Copy, robotVelocityX_Copy, robotVelocityY_Copy, robotOmega_Copy, enc1_Copy, enc2_Copy, enc3_Copy;
 
   noInterrupts();
   x_Copy = x_Real;
@@ -108,6 +110,9 @@ void send_to_laptop()
   robotVelocityX_Copy = robotVelocityX_Real;
   robotVelocityY_Copy = robotVelocityY_Real;
   robotOmega_Copy  = robotOmega_Real;
+  enc1_Copy = encoderPulseDif1;
+  enc2_Copy = encoderPulseDif2;
+  enc3_Copy = encoderPulseDif3;
   interrupts();
 
 
@@ -121,22 +126,33 @@ void send_to_laptop()
   else robotVelocityY_Parity = 0;
   if(robotOmega_Copy<0)robotOmega_Parity = 1;
   else robotOmega_Parity = 0;
+  if(enc1_Copy<0)enc1_Parity = 1;
+  else enc1_Parity = 0;
+  if(enc2_Copy<0)enc2_Parity = 1;
+  else enc2_Parity = 0;
+  if(enc3_Copy<0)enc3_Parity = 1;
+  else enc3_Parity = 0;
+  
 
-
-  parity = x_Parity | (y_Parity<<1) | (robotVelocityX_Parity<<2) | (robotVelocityY_Parity<<3) | (robotOmega_Parity<<4);
+  parity = x_Parity | (y_Parity<<1) | (robotVelocityX_Parity<<2) | (robotVelocityY_Parity<<3) | (robotOmega_Parity<<4) | (enc1_Parity<<5) | (enc2_Parity<<6) | (enc3_Parity<<7) ;
   
   absX = (uint16_t)(abs(x_Copy));
   absY = (uint16_t)(abs(y_Copy));
   absRobotVelocityX_Real = (uint16_t)(abs(robotVelocityX_Copy));
   absRobotVelocityY_Real = (uint16_t)(abs(robotVelocityY_Copy));
   absRobotOmega_Real = (uint16_t)(abs(robotOmega_Copy));
+  auto absEnc1 = (uint16_t)(abs(enc1_Copy));
+  auto absEnc2 = (uint16_t)(abs(enc2_Copy));
+  auto absEnc3 = (uint16_t)(abs(enc3_Copy));
 
-  yaw100 = (uint16_t)(theta_Real*100);
+  thetaTimes100 = (uint16_t)(theta360*100);
   
-  uint8_t data[14] = {(uint8_t)(absX>>8), (uint8_t)(absX&0x00FF), (uint8_t)(absY>>8), (uint8_t)(absY&0x00FF), (uint8_t)(absRobotVelocityX_Real>>8), (uint8_t)(absRobotVelocityX_Real&0x00FF), 
+  uint8_t data[20] = {(uint8_t)(absEnc1>>8), (uint8_t)(absEnc1&0x00FF), (uint8_t)(absEnc2>>8), (uint8_t)(absEnc2&0x00FF), (uint8_t)(absEnc3>>8), (uint8_t)(absEnc3&0x00FF),
+                      (uint8_t)(absX>>8), (uint8_t)(absX&0x00FF), (uint8_t)(absY>>8), (uint8_t)(absY&0x00FF), (uint8_t)(absRobotVelocityX_Real>>8), (uint8_t)(absRobotVelocityX_Real&0x00FF), 
                       (uint8_t)(absRobotVelocityY_Real>>8), (uint8_t)(absRobotVelocityY_Real&0x00FF), (uint8_t)(absRobotOmega_Real>>8), (uint8_t)(absRobotOmega_Real&0x00FF), parity, 
-                      (uint8_t)(yaw100>>8), (uint8_t)(yaw100&0x00FF), IR_READ|(destination<<4) };
-  serial_send_packets(data, 14);
+                      (uint8_t)(thetaTimes100>>8), (uint8_t)(thetaTimes100&0x00FF), IR_READ|(destination<<4) };
+  // uint8_t data[20] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+  serial_send_packets(data, 20);
 
   sendDataPlease = false;
 }
