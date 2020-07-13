@@ -148,8 +148,10 @@ void positionPID(int targetX, int targetY, int targetTheta)
 
 void moveRobot(int vX, int vY, int omega)
 {
-  omega = omega/100;
-  omega = omega*TO_DEG;
+  float omega_f = omega;
+  omega_f = omega_f/100;
+  omega_f = omega_f*TO_DEG;
+  omega = omega_f;
 
   vX = constrain(vX, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
   vY = constrain(vY, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);

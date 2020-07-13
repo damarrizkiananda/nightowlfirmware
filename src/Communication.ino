@@ -1,5 +1,5 @@
 
-#define USE_EXTRA_PROTOCOL
+// #define USE_EXTRA_PROTOCOL
 
 int debugCounter = 0;
 
@@ -8,15 +8,15 @@ void encode_data(){
   // this is where to encode the data received, like the receive event in i2c
   // where serial_buffer[0] is the data type, and the rest is data
 
-  if(debugCounter>10)
-  {
-    char text[100];
-    sprintf(text, "buff0: %d    buff1:%d     buff2:%d    buff3:%d", serial_buffer[0], serial_buffer[1], serial_buffer[2], serial_buffer[3]);
-    BLUETOOTH_SERIAL.println(text);
-    debugCounter = 0;
-  }
+  // if(debugCounter>10)
+  // {
+  //   char text[100];
+  //   sprintf(text, "buff0: %d    buff1:%d     buff2:%d    buff3:%d", serial_buffer[0], serial_buffer[1], serial_buffer[2], serial_buffer[3]);
+  //   BLUETOOTH_SERIAL.println(text);
+  //   debugCounter = 0;
+  // }
  
-  debugCounter++;
+  // debugCounter++;
 
   uint8_t robotVelocityX_Received = serial_buffer[0];
   uint8_t robotVelocityY_Received = serial_buffer[1];
@@ -96,7 +96,7 @@ void serial_send_packets(int32_t* data, byte len){
     #ifdef USE_EXTRA_PROTOCOL
     if(data[i]==SERIAL_HEAD||data[i]==SERIAL_TAIL)data[i]++;
     #endif
-    serial_send(data[i]+1);
+    serial_send(data[i]);
   }
   Serial.write(SERIAL_TAIL);
 }
