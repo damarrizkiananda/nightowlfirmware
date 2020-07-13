@@ -21,10 +21,10 @@ double wheelVelocity1_Target, wheelVelocity2_Target, wheelVelocity3_Target;
 double x_Real, y_Real, theta_Real, theta_BNO055, theta_Odo, theta360;
 
 /* Robot Velocity */
-double robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target;
+double robotVelocityX_Target = 0, robotVelocityY_Target = 0, robotOmega_Target = 0;
 double robotVelocityX_Real, robotVelocityY_Real, robotOmega_Real;
 
-#define TIMER_INTERRUPT_PERIOD 50.0
+#define TIMER_INTERRUPT_PERIOD 75.0
 
 /* Set the delay between fresh samples */
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 25;
@@ -36,7 +36,7 @@ sensors_event_t orientationData;
 bool serial_receiving = false;
 bool serial_new_data = false;
 byte serial_ndx = 0, serial_recv_len = 0;
-uint8_t serial_buffer[16];
+uint8_t serial_buffer[16] = {0};
 
 #define BLUETOOTH_SERIAL Serial5
 #define BLUETOOTH_HEAD   '{'
@@ -44,7 +44,7 @@ uint8_t serial_buffer[16];
 bool bluetooth_receiving = false;
 bool bluetooth_new_data = false;
 byte bluetooth_ndx = 0, bluetooth_recv_len = 0;
-uint8_t bluetooth_buffer[16];
+uint8_t bluetooth_buffer[16] = {0};
 
 unsigned long now = 0;
 
@@ -190,13 +190,13 @@ void loop()
 {
   // Serial.println(IR_READ,BIN);
   // delay(500);
-  // NightOwlMain();
+  NightOwlMain();
   // vibeCheck();
   // bluetoothCheck();
   // timerCheck();
   // odometryCheck();
   // inverseCheck();
-  mainMain();
+  // mainMain();
   // goToDestination();
   // delay(10);
   // bluetooth_receive();

@@ -6,20 +6,12 @@ int filteredPwm3, filteredPwmPrev3;
 
 void NightOwlMain()
 {
-  if(robotState == WAITING_FOR_NEW_DESTINATION)
+  serial_receive();
+  if(velocityAndPositionUpdated == true)
   {
-    robotMotorWrite(0, 0, 0); 
-    bluetooth_receive();
-    
-    if(newDestination) 
-    {
-      robotState = MOVING;
-      newDestination = false;   
-    }
-  }
-  else if(robotState == MOVING)
-  {
-    
+    send_to_laptop();
+    moveRobot(robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target);
+    velocityAndPositionUpdated = false;
   }
 }
 

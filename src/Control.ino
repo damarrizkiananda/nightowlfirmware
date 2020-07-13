@@ -146,6 +146,39 @@ void positionPID(int targetX, int targetY, int targetTheta)
 }
 #endif
 
+void moveRobot(int vX, int vY, int omega)
+{
+  omega = omega/100;
+  omega = omega*TO_DEG;
+
+  vX = constrain(vX, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+  vY = constrain(vY, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+  omega = constrain(omega, -MAX_ROBOT_OMEGA, MAX_ROBOT_OMEGA);
+
+  noInterrupts();
+  auto currentTheta = theta_Real;
+  interrupts();
+
+  double sin_theta = sin(-currentTheta*TO_RAD);
+  double cos_theta = cos(-currentTheta*TO_RAD);
+  
+  double localOutputX = vX*cos_theta - vY*sin_theta;
+  double localOutputY = vX*sin_theta + vY*cos_theta;
+  
+  double totalSpeed = sqrt(localOutputX*localOutputX + localOutputY*localOutputY);
+  if(totalSpeed>MAX_ROBOT_SPEED)
+  {
+    localOutputX = localOutputX/totalSpeed;
+    localOutputY = localOutputY/totalSpeed;
+
+    localOutputX = localOutputX*MAX_ROBOT_SPEED;
+    localOutputY = localOutputY*MAX_ROBOT_SPEED;
+  }
+
+  inverseKinematics(localOutputX, localOutputY, omega);
+  robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
+}
+
 void motorPID(int target1, int target2, int target3)
 { 
   Setpoint1 = target1;

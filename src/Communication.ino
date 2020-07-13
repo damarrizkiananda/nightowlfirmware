@@ -1,23 +1,37 @@
 
 #define USE_EXTRA_PROTOCOL
 
+int debugCounter = 0;
+
 //** serial comm
 void encode_data(){
   // this is where to encode the data received, like the receive event in i2c
   // where serial_buffer[0] is the data type, and the rest is data
-  uint8_t robotVelocityX_Parity, robotVelocityY_Parity, robotOmega_Parity;
 
-  robotVelocityX_Target = serial_buffer[0];
-  robotVelocityY_Target = serial_buffer[1];
-  robotOmega_Target = serial_buffer[2];
-  robotVelocityX_Parity = serial_buffer[3] & 0x01;
-  robotVelocityY_Parity = (serial_buffer[3] >> 1) & 0x01;
-  robotOmega_Parity = (serial_buffer[3] >> 2) & 0x01;
-  arrived = (serial_buffer[3] >> 3) & 0x01;
+  if(debugCounter>10)
+  {
+    char text[100];
+    sprintf(text, "buff0: %d    buff1:%d     buff2:%d    buff3:%d", serial_buffer[0], serial_buffer[1], serial_buffer[2], serial_buffer[3]);
+    BLUETOOTH_SERIAL.println(text);
+    debugCounter = 0;
+  }
+ 
+  debugCounter++;
 
-  if(robotVelocityX_Parity == 1) robotVelocityX_Target = robotVelocityX_Target*(-1);
-  if(robotVelocityY_Parity == 1) robotVelocityY_Target = robotVelocityY_Target*(-1);
-  if(robotOmega_Parity  == 1) robotOmega_Target  = robotOmega_Target*(-1);
+  uint8_t robotVelocityX_Received = serial_buffer[0];
+  uint8_t robotVelocityY_Received = serial_buffer[1];
+  uint8_t robotOmega_Received = serial_buffer[2];
+  uint8_t robotVelocityX_Parity = serial_buffer[3] & 0x01;
+  uint8_t robotVelocityY_Parity = (serial_buffer[3] >> 1) & 0x01;
+  uint8_t robotOmega_Parity = (serial_buffer[3] >> 2) & 0x01;
+  //arrived = (serial_buffer[3] >> 3) & 0x01;
+
+  if(robotVelocityX_Parity == 1) robotVelocityX_Target = robotVelocityX_Received*(-1);
+  else robotVelocityX_Target = robotVelocityX_Received;
+  if(robotVelocityY_Parity == 1) robotVelocityY_Target = robotVelocityY_Received*(-1);
+  else robotVelocityY_Target = robotVelocityY_Received;
+  if(robotOmega_Parity  == 1) robotOmega_Target  = robotOmega_Received*(-1);
+  else robotOmega_Target = robotOmega_Received;
   
 }
 
@@ -31,9 +45,17 @@ void serial_receive(){
         serial_ndx++;
       }
       else{
-        serial_receiving = false;
-        serial_new_data = true;
-        serial_recv_len = serial_ndx; serial_ndx = 0;
+        if(serial_ndx<=3)
+        {
+          serial_buffer[serial_ndx] = rc;
+          serial_ndx++;
+        }
+        else
+        {
+          serial_receiving = false;
+          serial_new_data = true;
+          serial_recv_len = serial_ndx; serial_ndx = 0;
+        }
       }
     }
     else if (rc == SERIAL_HEAD) {
@@ -102,7 +124,7 @@ void send_to_laptop()
   uint16_t absX, absY;
 
   /* Copy */
-  uint16_t x_Copy, y_Copy, robotVelocityX_Copy, robotVelocityY_Copy, robotOmega_Copy, enc1_Copy, enc2_Copy, enc3_Copy;
+  int16_t x_Copy, y_Copy, robotVelocityX_Copy, robotVelocityY_Copy, robotOmega_Copy, enc1_Copy, enc2_Copy, enc3_Copy;
 
   noInterrupts();
   x_Copy = x_Real;
@@ -141,16 +163,23 @@ void send_to_laptop()
   absRobotVelocityX_Real = (uint16_t)(abs(robotVelocityX_Copy));
   absRobotVelocityY_Real = (uint16_t)(abs(robotVelocityY_Copy));
   absRobotOmega_Real = (uint16_t)(abs(robotOmega_Copy));
-  auto absEnc1 = (uint16_t)(abs(enc1_Copy));
-  auto absEnc2 = (uint16_t)(abs(enc2_Copy));
-  auto absEnc3 = (uint16_t)(abs(enc3_Copy));
+  uint16_t absEnc1 = (uint16_t)(abs(enc1_Copy));
+  uint16_t absEnc2 = (uint16_t)(abs(enc2_Copy));
+  uint16_t absEnc3 = (uint16_t)(abs(enc3_Copy));
 
   thetaTimes100 = (uint16_t)(theta360*100);
   
-  uint8_t data[20] = {(uint8_t)(absEnc1>>8), (uint8_t)(absEnc1&0x00FF), (uint8_t)(absEnc2>>8), (uint8_t)(absEnc2&0x00FF), (uint8_t)(absEnc3>>8), (uint8_t)(absEnc3&0x00FF),
-                      (uint8_t)(absX>>8), (uint8_t)(absX&0x00FF), (uint8_t)(absY>>8), (uint8_t)(absY&0x00FF), (uint8_t)(absRobotVelocityX_Real>>8), (uint8_t)(absRobotVelocityX_Real&0x00FF), 
-                      (uint8_t)(absRobotVelocityY_Real>>8), (uint8_t)(absRobotVelocityY_Real&0x00FF), (uint8_t)(absRobotOmega_Real>>8), (uint8_t)(absRobotOmega_Real&0x00FF), parity, 
-                      (uint8_t)(thetaTimes100>>8), (uint8_t)(thetaTimes100&0x00FF), IR_READ|(destination<<4) };
+  uint8_t data[20] = {(uint8_t)(absEnc1>>8), (uint8_t)(absEnc1&0x00FF), 
+                      (uint8_t)(absEnc2>>8), (uint8_t)(absEnc2&0x00FF), 
+                      (uint8_t)(absEnc3>>8), (uint8_t)(absEnc3&0x00FF),
+                      (uint8_t)(absRobotVelocityX_Real>>8), (uint8_t)(absRobotVelocityX_Real&0x00FF),
+                      (uint8_t)(absRobotVelocityY_Real>>8), (uint8_t)(absRobotVelocityY_Real&0x00FF), 
+                      (uint8_t)(absRobotOmega_Real>>8), (uint8_t)(absRobotOmega_Real&0x00FF), 
+                      (uint8_t)(absX>>8), (uint8_t)(absX&0x00FF), 
+                      (uint8_t)(absY>>8), (uint8_t)(absY&0x00FF),
+                      (uint8_t)(thetaTimes100>>8), (uint8_t)(thetaTimes100&0x00FF),
+                      (uint8_t)parity, 
+                      (uint8_t)IR_READ };
   // uint8_t data[20] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
   serial_send_packets(data, 20);
 
