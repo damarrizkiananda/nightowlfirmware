@@ -120,15 +120,11 @@ double KpTheta=5, KiTheta=3.6, KdTheta=0.001;
 PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta, KdTheta, DIRECT);
 
 
-double SetpointR, InputR, OutputR;
-double KpR=20, KiR=1, KdR=0.001;
-PID positionPIDR(&InputR, &OutputR, &SetpointR, KpR, KiR, KdR, DIRECT);
-
 /* Conversion Constants */
 #define TO_DEG    57.29577951308
 #define TO_RAD    0.01745329252
-#define PI        3.1415926535
-#define TWO_PI    6.2831853071
+// #define PI        3.1415926535
+// #define TWO_PI    6.2831853071
 
 /*     Dist/pulse = 
  *  Circumference/PPR 
