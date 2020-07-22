@@ -20,7 +20,7 @@ void updateVelocityAndPosition()
 
   getThetaBNO055Deg();
   theta_Real = theta_BNO055;
-  getPosition();
+  calculatePosition();
 
   robotVelocityX_Real = (x_Real-lastX) * 1000.0 / TIMER_INTERRUPT_PERIOD;
   robotVelocityY_Real = (y_Real-lastY) * 1000.0 / TIMER_INTERRUPT_PERIOD;
@@ -48,7 +48,7 @@ void updateVelocityAndPosition()
 double sin_theta, cos_theta;
 double x_count, y_count;
 
-void getPosition()
+void calculatePosition()
 {
   sin_theta = sin(theta_Real*TO_RAD);
   cos_theta = cos(theta_Real*TO_RAD);
