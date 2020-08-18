@@ -181,24 +181,24 @@ void moveRobot(int vX, int vY, int omega)
   robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
 }
 
-void motorPID(int target1, int target2, int target3)
-{ 
-  Setpoint1 = target1;
-  Setpoint2 = target2;
-  Setpoint3 = target3;
+// void motorPID(int target1, int target2, int target3)
+// { 
+//   Setpoint1 = target1;
+//   Setpoint2 = target2;
+//   Setpoint3 = target3;
 
-  noInterrupts();
-  Input1 = wheelVelocity1_Real;
-  Input2 = wheelVelocity2_Real;
-  Input3 = wheelVelocity3_Real;
-  interrupts();
+//   noInterrupts();
+//   Input1 = wheelVelocity1_Real;
+//   Input2 = wheelVelocity2_Real;
+//   Input3 = wheelVelocity3_Real;
+//   interrupts();
 
-  motorPID1.Compute();
-  motorPID2.Compute();
-  motorPID3.Compute();
+//   motorPID1.Compute();
+//   motorPID2.Compute();
+//   motorPID3.Compute();
 
-  robotMotorWrite(Output1, Output2, Output3);
-}
+//   robotMotorWrite(Output1, Output2, Output3);
+// }
 
 
 /* Motion filter to filter motions and compliance */

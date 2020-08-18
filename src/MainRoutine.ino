@@ -4,59 +4,79 @@ int filteredPwm1, filteredPwmPrev1;
 int filteredPwm2, filteredPwmPrev2;
 int filteredPwm3, filteredPwmPrev3;
 
+int obstacleDetected()
+{
+  int result;
+  if((IR_READ & 0b00000010) > 1) result = 1;
+  else result = 0;
+  return result;
+}
+
+int count;
+
 void NightOwlMain()
 {
   serial_receive();
   if(velocityAndPositionUpdated == true)
   {
     send_to_laptop();
-    moveRobot(robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target);
+    if(obstacleDetected() == 0) moveRobot(robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target);
+    else moveRobot(0,0,0);
+
+    count++;
+    if(count>50)
+    {
+      BLUETOOTH_SERIAL.print(x_Real); BLUETOOTH_SERIAL.print(" ");
+      BLUETOOTH_SERIAL.println(y_Real);
+      count = 0;
+    }
+    
     velocityAndPositionUpdated = false;
   }
 }
 
-void NightOwlMainOld()
-{
-  /* Send data every 100ms */
-  if(sendDataPlease)
-  {
-    //getThetaBNO055Deg();
-    send_to_laptop();
-  }  
+// void NightOwlMainOld()
+// {
+//   /* Send data every 100ms */
+//   if(sendDataPlease)
+//   {
+//     //getThetaBNO055Deg();
+//     send_to_laptop();
+//   }  
   
-  if(robotState == WAITING_FOR_NEW_DESTINATION)
-  {
-    robotMotorWrite(0, 0, 0); 
-    bluetooth_receive();
+//   if(robotState == WAITING_FOR_NEW_DESTINATION)
+//   {
+//     robotMotorWrite(0, 0, 0); 
+//     bluetooth_receive();
     
-    if(newDestination) 
-    {
-      robotState = MOVING;
-      newDestination = false;   
-    }
-  }
-  else if(robotState == MOVING)
-  {
-    // serial_receive();
+//     if(newDestination) 
+//     {
+//       robotState = MOVING;
+//       newDestination = false;   
+//     }
+//   }
+//   else if(robotState == MOVING)
+//   {
+//     // serial_receive();
 
-    // filteredPwm1 = filter(filteredPwmPrev1, pwm1, filterVal);
-    // filteredPwmPrev1 = filteredPwm1;
+//     // filteredPwm1 = filter(filteredPwmPrev1, pwm1, filterVal);
+//     // filteredPwmPrev1 = filteredPwm1;
 
-    // filteredPwm2 = filter(filteredPwmPrev2, pwm2, filterVal);
-    // filteredPwmPrev2 = filteredPwm2;
+//     // filteredPwm2 = filter(filteredPwmPrev2, pwm2, filterVal);
+//     // filteredPwmPrev2 = filteredPwm2;
 
-    // filteredPwm3 = filter(filteredPwmPrev3, pwm3, filterVal);
-    // filteredPwmPrev3 = filteredPwm3;
+//     // filteredPwm3 = filter(filteredPwmPrev3, pwm3, filterVal);
+//     // filteredPwmPrev3 = filteredPwm3;
 
-    // robotMotorWrite(filteredPwm1, filteredPwm2, filteredPwm3); 
+//     // robotMotorWrite(filteredPwm1, filteredPwm2, filteredPwm3); 
 
-    // if(arrived)
-    // {
-    //   send_to_tablet();
-    //   robotState = WAITING_FOR_NEW_DESTINATION;
-    // }
-  }
-}
+//     // if(arrived)
+//     // {
+//     //   send_to_tablet();
+//     //   robotState = WAITING_FOR_NEW_DESTINATION;
+//     // }
+//   }
+// }
 
 unsigned long CT = 0;
 
@@ -117,14 +137,14 @@ char data[3] = {'h','g','z'};
 void bluetoothCheck()
 {
   bluetooth_receive();
-  if(newDestination)
-  {
-    Serial.println("Data Accepted, Sending Replies");
-    for(int i = 0; i<=3; i++) Serial.print(bluetooth_buffer[i]);
-    Serial.println();
-    //bluetooth_send_packets(data, 3);
-    newDestination = false;
-  }
+  // if(newDestination)
+  // {
+  //   Serial.println("Data Accepted, Sending Replies");
+  //   for(int i = 0; i<=3; i++) Serial.print(bluetooth_buffer[i]);
+  //   Serial.println();
+  //   //bluetooth_send_packets(data, 3);
+  //   newDestination = false;
+  // }
 }
 
 void timerCheck()

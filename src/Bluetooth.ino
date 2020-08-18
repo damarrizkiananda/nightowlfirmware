@@ -6,9 +6,9 @@ void bluetooth_encode_data(){
   // this is where to encode the data received, like the receive event in i2c
   // where bluetooth_buffer[0] is the data type, and the rest is data
   
-  destination = bluetooth_buffer[0];
+  // destination = bluetooth_buffer[0];
 
-  newDestination = true;
+  // newDestination = true;
 }
 
 void bluetooth_receive(){

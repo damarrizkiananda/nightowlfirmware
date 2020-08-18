@@ -24,7 +24,7 @@ double x_Real, y_Real, theta_Real, theta_BNO055, theta_Odo, theta360;
 double robotVelocityX_Target = 0, robotVelocityY_Target = 0, robotOmega_Target = 0;
 double robotVelocityX_Real, robotVelocityY_Real, robotOmega_Real;
 
-#define TIMER_INTERRUPT_PERIOD 75.0
+#define TIMER_INTERRUPT_PERIOD 50.0
 
 /* Set the delay between fresh samples */
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 25;
@@ -62,48 +62,48 @@ int motorPwm1, motorPwm2, motorPwm3;
 #define IR_3_PIN 29
 #define IR_4_PIN 31
 
-#define IR_READ (!digitalRead(IR_1_PIN)) | ((!digitalRead(IR_2_PIN))<<1) | ((!digitalRead(IR_3_PIN))<<2) | ((!digitalRead(IR_4_PIN))<<3)
+#define IR_READ ((!digitalRead(IR_1_PIN)) | ((!digitalRead(IR_2_PIN))<<1) | ((!digitalRead(IR_3_PIN))<<2) | ((!digitalRead(IR_4_PIN))<<3))
 
 bool sendDataPlease;
 bool velocityAndPositionUpdated;
 
-#define WAITING_FOR_NEW_DESTINATION 0
-#define MOVING 1
+// #define WAITING_FOR_NEW_DESTINATION 0
+// #define MOVING 1
 
-uint8_t robotState = MOVING;
-bool arrived;
+// uint8_t robotState = MOVING;
+// bool arrived;
 
-bool newDestination;
-uint8_t destination; 
-#define HONEYWELL 1
-#define FO        2
-#define Toilet    3
+// bool newDestination;
+// uint8_t destination; 
+// #define HONEYWELL 1
+// #define FO        2
+// #define Toilet    3
 
-/* Motor Velocity Control */ 
-double Setpoint1, Input1, Output1;
-double Kp1=0.5, Ki1=1.5, Kd1=0.001;
-PID motorPID1(&Input1, &Output1, &Setpoint1, Kp1, Ki1, Kd1, DIRECT);
+// /* Motor Velocity Control */ 
+// double Setpoint1, Input1, Output1;
+// double Kp1=0.5, Ki1=1.5, Kd1=0.001;
+// PID motorPID1(&Input1, &Output1, &Setpoint1, Kp1, Ki1, Kd1, DIRECT);
 
-double Setpoint2, Input2, Output2;
-double Kp2=0.5, Ki2=1.5, Kd2=0.001;
-PID motorPID2(&Input2, &Output2, &Setpoint2, Kp2, Ki2, Kd2, DIRECT);
+// double Setpoint2, Input2, Output2;
+// double Kp2=0.5, Ki2=1.5, Kd2=0.001;
+// PID motorPID2(&Input2, &Output2, &Setpoint2, Kp2, Ki2, Kd2, DIRECT);
 
-double Setpoint3, Input3, Output3;
-double Kp3=0.5, Ki3=1.5, Kd3=0.001;
-PID motorPID3(&Input3, &Output3, &Setpoint3, Kp3, Ki3, Kd3, DIRECT);
+// double Setpoint3, Input3, Output3;
+// double Kp3=0.5, Ki3=1.5, Kd3=0.001;
+// PID motorPID3(&Input3, &Output3, &Setpoint3, Kp3, Ki3, Kd3, DIRECT);
 
-/* Robot Velocity Control */
-double SetpointVX, InputVX, OutputVX;
-double KpVX=8, KiVX=1, KdVX=0.001;
-PID velocityXPID(&InputVX, &OutputVX, &SetpointVX, KpVX, KiVX, KdVX, DIRECT);
+// /* Robot Velocity Control */
+// double SetpointVX, InputVX, OutputVX;
+// double KpVX=8, KiVX=1, KdVX=0.001;
+// PID velocityXPID(&InputVX, &OutputVX, &SetpointVX, KpVX, KiVX, KdVX, DIRECT);
 
-double SetpointVY, InputVY, OutputVY;
-double KpVY=8, KiVY=1, KdVY=0.001;
-PID velocityYPID(&InputVY, &OutputVY, &SetpointVY, KpVY, KiVY, KdVY, DIRECT);
+// double SetpointVY, InputVY, OutputVY;
+// double KpVY=8, KiVY=1, KdVY=0.001;
+// PID velocityYPID(&InputVY, &OutputVY, &SetpointVY, KpVY, KiVY, KdVY, DIRECT);
 
-double SetpointOmega, InputOmega, OutputOmega;
-double KpOmega=8, KiOmega=1, KdOmega=0.001;
-PID omegaPID(&InputOmega, &OutputOmega, &SetpointOmega, KpOmega, KiOmega, KdOmega, DIRECT);
+// double SetpointOmega, InputOmega, OutputOmega;
+// double KpOmega=8, KiOmega=1, KdOmega=0.001;
+// PID omegaPID(&InputOmega, &OutputOmega, &SetpointOmega, KpOmega, KiOmega, KdOmega, DIRECT);
 
 
 /* Robot Position Control */
@@ -170,9 +170,9 @@ void setup()
   // FlexiTimer2::set(500, flash); // MsTimer2 style is also supported
   FlexiTimer2::start();
 
-  motorPID1.SetMode(AUTOMATIC); motorPID1.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
-  motorPID2.SetMode(AUTOMATIC); motorPID2.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
-  motorPID3.SetMode(AUTOMATIC); motorPID3.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
+  // motorPID1.SetMode(AUTOMATIC); motorPID1.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
+  // motorPID2.SetMode(AUTOMATIC); motorPID2.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
+  // motorPID3.SetMode(AUTOMATIC); motorPID3.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
 
   positionPIDX.SetMode(AUTOMATIC); positionPIDX.SetOutputLimits(-MAX_ROBOT_SPEED,MAX_ROBOT_SPEED); positionPIDX.SetSampleTime(50);
   positionPIDY.SetMode(AUTOMATIC); positionPIDY.SetOutputLimits(-MAX_ROBOT_SPEED,MAX_ROBOT_SPEED); positionPIDY.SetSampleTime(50);

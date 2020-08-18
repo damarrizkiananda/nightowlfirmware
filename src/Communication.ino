@@ -26,11 +26,11 @@ void encode_data(){
   uint8_t robotOmega_Parity = (serial_buffer[3] >> 2) & 0x01;
   //arrived = (serial_buffer[3] >> 3) & 0x01;
 
-  if(robotVelocityX_Parity == 1) robotVelocityX_Target = robotVelocityX_Received*(-1);
+  if(robotVelocityX_Parity == 0) robotVelocityX_Target = robotVelocityX_Received*(-1);
   else robotVelocityX_Target = robotVelocityX_Received;
-  if(robotVelocityY_Parity == 1) robotVelocityY_Target = robotVelocityY_Received*(-1);
+  if(robotVelocityY_Parity == 0) robotVelocityY_Target = robotVelocityY_Received*(-1);
   else robotVelocityY_Target = robotVelocityY_Received;
-  if(robotOmega_Parity  == 1) robotOmega_Target  = robotOmega_Received*(-1);
+  if(robotOmega_Parity  == 0) robotOmega_Target  = robotOmega_Received*(-1);
   else robotOmega_Target = robotOmega_Received;
   
 }
@@ -138,22 +138,22 @@ void send_to_laptop()
   interrupts();
 
 
-  if(x_Copy<0)x_Parity = 1;
-  else x_Parity = 0;
-  if(y_Copy<0)y_Parity = 1;
-  else y_Parity = 0;
-  if(robotVelocityX_Copy<0)robotVelocityX_Parity = 1;
-  else robotVelocityX_Parity = 0;
-  if(robotVelocityY_Copy<0)robotVelocityY_Parity = 1;
-  else robotVelocityY_Parity = 0;
-  if(robotOmega_Copy<0)robotOmega_Parity = 1;
-  else robotOmega_Parity = 0;
-  if(enc1_Copy<0)enc1_Parity = 1;
-  else enc1_Parity = 0;
-  if(enc2_Copy<0)enc2_Parity = 1;
-  else enc2_Parity = 0;
-  if(enc3_Copy<0)enc3_Parity = 1;
-  else enc3_Parity = 0;
+  if(x_Copy<0)x_Parity = 0;
+  else x_Parity = 1;
+  if(y_Copy<0)y_Parity = 0;
+  else y_Parity = 1;
+  if(robotVelocityX_Copy<0)robotVelocityX_Parity = 0;
+  else robotVelocityX_Parity = 1;
+  if(robotVelocityY_Copy<0)robotVelocityY_Parity = 0;
+  else robotVelocityY_Parity = 1;
+  if(robotOmega_Copy<0)robotOmega_Parity = 0;
+  else robotOmega_Parity = 1;
+  if(enc1_Copy<0)enc1_Parity = 0;
+  else enc1_Parity = 1;
+  if(enc2_Copy<0)enc2_Parity = 0;
+  else enc2_Parity = 1;
+  if(enc3_Copy<0)enc3_Parity = 0;
+  else enc3_Parity = 1;
   
 
   parity = x_Parity | (y_Parity<<1) | (robotVelocityX_Parity<<2) | (robotVelocityY_Parity<<3) | (robotOmega_Parity<<4) | (enc1_Parity<<5) | (enc2_Parity<<6) | (enc3_Parity<<7) ;
