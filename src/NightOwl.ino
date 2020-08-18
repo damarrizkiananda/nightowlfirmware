@@ -24,7 +24,7 @@ double x_Real, y_Real, theta_Real, theta_BNO055, theta_Odo, theta360;
 double robotVelocityX_Target = 0, robotVelocityY_Target = 0, robotOmega_Target = 0;
 double robotVelocityX_Real, robotVelocityY_Real, robotOmega_Real;
 
-#define TIMER_INTERRUPT_PERIOD 50.0
+#define TIMER_INTERRUPT_PERIOD 50.0 // 20 Hz
 
 /* Set the delay between fresh samples */
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 25;
