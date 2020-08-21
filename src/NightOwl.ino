@@ -186,7 +186,8 @@ void loop()
 {
   // Serial.println(IR_READ,BIN);
   // delay(500);
-  NightOwlMain();
+  // NightOwlMain();
+  manualMode();
   // vibeCheck();
   // bluetoothCheck();
   // timerCheck();
