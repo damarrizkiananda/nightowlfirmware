@@ -139,8 +139,8 @@ void bluetoothCheck()
 
 #define AUTOMATIC 0
 #define MANUAL    1
-#define MANUAL_V  50
-#define MANUAL_OM 40
+#define MANUAL_V  60
+#define MANUAL_OM 100
 char bluetoothCommand = 'z';
 int manualVX = 0, manualVY = 0, manualOmega = 0, mode = AUTOMATIC;
 
@@ -202,7 +202,7 @@ void NightOwlMainEasterEgg()
     bluetoothCommand = 'z';
   }
 
-  if(mode == MANUAL) moveRobot(manualVX, manualVY, manualOmega);
+  if(mode == MANUAL) moveRobotLocal(manualVX, manualVY, manualOmega);
   else
   {
     NightOwlMain();

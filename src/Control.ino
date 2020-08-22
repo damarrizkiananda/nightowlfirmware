@@ -146,7 +146,7 @@ void positionPID(int targetX, int targetY, int targetTheta)
 }
 #endif
 
-void moveRobot(int vX, int vY, int omega)
+void moveRobot(int vX, int vY, float omega)
 {
   float omega_f = omega;
   omega_f = omega_f/100;
@@ -166,6 +166,34 @@ void moveRobot(int vX, int vY, int omega)
   
   double localOutputX = vX*cos_theta - vY*sin_theta;
   double localOutputY = vX*sin_theta + vY*cos_theta;
+  
+  double totalSpeed = sqrt(localOutputX*localOutputX + localOutputY*localOutputY);
+  if(totalSpeed>MAX_ROBOT_SPEED)
+  {
+    localOutputX = localOutputX/totalSpeed;
+    localOutputY = localOutputY/totalSpeed;
+
+    localOutputX = localOutputX*MAX_ROBOT_SPEED;
+    localOutputY = localOutputY*MAX_ROBOT_SPEED;
+  }
+
+  inverseKinematics(localOutputX, localOutputY, omega);
+  robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
+}
+
+void moveRobotLocal(int vX, int vY, float omega)
+{
+  float omega_f = omega;
+  omega_f = omega_f/100;
+  omega_f = omega_f*TO_DEG;
+  omega = omega_f;
+
+  vX = constrain(vX, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+  vY = constrain(vY, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+  omega = constrain(omega, -MAX_ROBOT_OMEGA, MAX_ROBOT_OMEGA);
+  
+  double localOutputX = vX;
+  double localOutputY = vY;
   
   double totalSpeed = sqrt(localOutputX*localOutputX + localOutputY*localOutputY);
   if(totalSpeed>MAX_ROBOT_SPEED)
