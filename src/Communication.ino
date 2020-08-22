@@ -140,10 +140,10 @@ void send_to_laptop()
   uint16_t thetaTimes100 = (uint16_t)(theta360*100);
   
   uint8_t data[9] = {(uint8_t)(absEnc1>>8), (uint8_t)(absEnc1&0x00FF), 
-                      (uint8_t)(absEnc2>>8), (uint8_t)(absEnc2&0x00FF), 
-                      (uint8_t)(absEnc3>>8), (uint8_t)(absEnc3&0x00FF),
-                      (uint8_t)(thetaTimes100>>8), (uint8_t)(thetaTimes100&0x00FF),
-                      (uint8_t)parity};
+                     (uint8_t)(absEnc2>>8), (uint8_t)(absEnc2&0x00FF), 
+                     (uint8_t)(absEnc3>>8), (uint8_t)(absEnc3&0x00FF),
+                     (uint8_t)(thetaTimes100>>8), (uint8_t)(thetaTimes100&0x00FF),
+                     (uint8_t)parity};
   // uint8_t data[20] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
   serial_send_packets(data, 9);
 
