@@ -146,6 +146,13 @@ int manualVX = 0, manualVY = 0, manualOmega = 0, mode = AUTOMATIC;
 
 void NightOwlMainEasterEgg()
 {
+  serial_receive();
+  if(velocityAndPositionUpdated == true)
+  {
+    send_to_laptop();  
+    velocityAndPositionUpdated = false;
+  }
+
   if(BLUETOOTH_SERIAL.available())
   {
     bluetoothCommand = BLUETOOTH_SERIAL.read();
@@ -205,7 +212,8 @@ void NightOwlMainEasterEgg()
   if(mode == MANUAL) moveRobotLocal(manualVX, manualVY, manualOmega);
   else
   {
-    NightOwlMain();
+    if(obstacleDetected() == 0) moveRobot(robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target);
+    else moveRobot(0,0,0);
   }
 }
 
