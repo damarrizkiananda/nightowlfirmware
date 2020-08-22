@@ -195,6 +195,9 @@ void NightOwlMainEasterEgg()
   }
   else if(bluetoothCommand == 'm')
   {
+    manualVY = 0;
+    manualVX = 0;
+    manualOmega = 0;
     mode = MANUAL;
     bluetoothCommand = 'z';
   }
