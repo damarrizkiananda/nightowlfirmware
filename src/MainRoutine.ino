@@ -12,8 +12,6 @@ int obstacleDetected()
   return result;
 }
 
-int count;
-
 void NightOwlMain()
 {
   serial_receive();
@@ -22,14 +20,6 @@ void NightOwlMain()
     send_to_laptop();
     if(obstacleDetected() == 0) moveRobot(robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target);
     else moveRobot(0,0,0);
-
-    count++;
-    if(count>50)
-    {
-      BLUETOOTH_SERIAL.print(x_Real); BLUETOOTH_SERIAL.print(" ");
-      BLUETOOTH_SERIAL.println(y_Real);
-      count = 0;
-    }
     
     velocityAndPositionUpdated = false;
   }
@@ -147,12 +137,14 @@ void bluetoothCheck()
   // }
 }
 
-#define MANUAL_V 50
+#define AUTOMATIC 0
+#define MANUAL    1
+#define MANUAL_V  50
 #define MANUAL_OM 40
 char bluetoothCommand = 'z';
-int manualVX = 0, manualVY = 0, manualOmega = 0;
+int manualVX = 0, manualVY = 0, manualOmega = 0, mode = AUTOMATIC;
 
-void manualMode()
+void NightOwlMainEasterEgg()
 {
   if(BLUETOOTH_SERIAL.available())
   {
@@ -196,8 +188,22 @@ void manualMode()
     manualOmega = 0;
     bluetoothCommand = 'z';
   }
+  else if(bluetoothCommand == 'a')
+  {
+    mode = AUTOMATIC;
+    bluetoothCommand = 'z';
+  }
+  else if(bluetoothCommand == 'm')
+  {
+    mode = MANUAL;
+    bluetoothCommand = 'z';
+  }
 
-  moveRobot(manualVX, manualVY, manualOmega);
+  if(mode == MANUAL) moveRobot(manualVX, manualVY, manualOmega);
+  else
+  {
+    NightOwlMain();
+  }
 }
 
 void timerCheck()

@@ -187,7 +187,7 @@ void loop()
   // Serial.println(IR_READ,BIN);
   // delay(500);
   // NightOwlMain();
-  manualMode();
+  NightOwlMainEasterEgg();
   // vibeCheck();
   // bluetoothCheck();
   // timerCheck();
