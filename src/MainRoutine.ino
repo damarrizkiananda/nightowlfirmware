@@ -143,6 +143,7 @@ void bluetoothCheck()
 #define MANUAL_OM 100
 char bluetoothCommand = 'z';
 int manualVX = 0, manualVY = 0, manualOmega = 0, mode = AUTOMATIC;
+int count = 0;
 
 void NightOwlMainEasterEgg()
 {
@@ -150,6 +151,21 @@ void NightOwlMainEasterEgg()
   if(velocityAndPositionUpdated == true)
   {
     send_to_laptop();  
+
+    count++;
+    if(count>100)
+    {
+      noInterrupts();
+      int xc = x_Real;
+      int yc = y_Real;
+      interrupts();
+
+      BLUETOOTH_SERIAL.print("x:"); BLUETOOTH_SERIAL.print(xc);
+      BLUETOOTH_SERIAL.print(" y:"); BLUETOOTH_SERIAL.println(yc);
+
+      count = 0;
+    }
+
     velocityAndPositionUpdated = false;
   }
 

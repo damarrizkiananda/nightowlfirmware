@@ -24,9 +24,8 @@ void updateVelocityAndPosition()
 
   robotVelocityX_Real = (x_Real-lastX) * 1000.0 / TIMER_INTERRUPT_PERIOD;
   robotVelocityY_Real = (y_Real-lastY) * 1000.0 / TIMER_INTERRUPT_PERIOD;
-  robotOmega_Real     = (theta_Real-lastYaw) * TO_RAD * 100000.0 / TIMER_INTERRUPT_PERIOD;
+  robotOmega_Real     = (theta_Real-lastYaw) * 100000.0 / TIMER_INTERRUPT_PERIOD; // 100 Degree/s
   // robotOmega_Real     = (theta_Real-lastYaw) * 1000 / TIMER_INTERRUPT_PERIOD;
-
 
   lastX = x_Real;
   lastY = y_Real;
