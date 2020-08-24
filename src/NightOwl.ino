@@ -5,6 +5,10 @@
 #include <PID_v1.h>
 #include <FlexiTimer2.h>
 #include <Encoder.h>
+#include <SimpleKalmanFilter.h>
+
+SimpleKalmanFilter simpleKalmanFilterX(2, 2, 0.01);
+SimpleKalmanFilter simpleKalmanFilterY(2, 2, 0.01);
 
 Encoder enc1(10, 9);
 Encoder enc3(11, 12);
