@@ -55,9 +55,9 @@ void calculatePosition()
   y_count += (sqrt3 * sin_theta * (encoderPulseDif1 - encoderPulseDif2) + cos_theta * (encoderPulseDif1 + encoderPulseDif2 - 2 * encoderPulseDif3)) / 3;
   x_count -= (-sqrt3 * cos_theta * (encoderPulseDif1 - encoderPulseDif2) + sin_theta * (encoderPulseDif1 + encoderPulseDif2 - 2 * encoderPulseDif3)) / 3;
        
-  float x_Measured = (x_count * DIST_PER_PULSE);
-  float y_Measured = (y_count * DIST_PER_PULSE);
+  x_Real = (x_count * DIST_PER_PULSE);
+  y_Real = (y_count * DIST_PER_PULSE);
 
-  x_Real = simpleKalmanFilterX.updateEstimate(x_Measured);
-  y_Real = simpleKalmanFilterY.updateEstimate(y_Measured);
+  // x_Real = simpleKalmanFilterX.updateEstimate(x_Measured);
+  // y_Real = simpleKalmanFilterY.updateEstimate(y_Measured);
 }

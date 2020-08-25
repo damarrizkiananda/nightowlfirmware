@@ -7,8 +7,8 @@
 #include <Encoder.h>
 #include <SimpleKalmanFilter.h>
 
-SimpleKalmanFilter simpleKalmanFilterX(2, 2, 0.01);
-SimpleKalmanFilter simpleKalmanFilterY(2, 2, 0.01);
+SimpleKalmanFilter simpleKalmanFilterX(0.5, 0.5, 0.001);
+SimpleKalmanFilter simpleKalmanFilterY(1, 1, 0.001);
 
 Encoder enc1(10, 9);
 Encoder enc3(11, 12);
