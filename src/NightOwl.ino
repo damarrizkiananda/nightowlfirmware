@@ -61,12 +61,12 @@ unsigned long now = 0;
 
 int motorPwm1, motorPwm2, motorPwm3;
 
-#define IR_1_PIN 25
-#define IR_2_PIN 27
-#define IR_3_PIN 29
-#define IR_4_PIN 31
+#define IR_BACK_PIN  25
+#define IR_RIGHT_PIN 27 
+#define IR_LEFT_PIN  29
+#define IR_FRONT_PIN 31 
 
-#define IR_READ ((!digitalRead(IR_1_PIN)) | ((!digitalRead(IR_2_PIN))<<1) | ((!digitalRead(IR_3_PIN))<<2) | ((!digitalRead(IR_4_PIN))<<3))
+#define IR_READ ((!digitalRead(IR_BACK_PIN)) | ((!digitalRead(IR_FRONT_PIN))<<1) | ((!digitalRead(IR_LEFT_PIN))<<2) | ((!digitalRead(IR_RIGHT_PIN))<<3))
 
 bool sendDataPlease;
 bool velocityAndPositionUpdated;
@@ -156,10 +156,10 @@ void setup()
     while (1);
   }
   
-  pinMode(IR_1_PIN, INPUT);
-  pinMode(IR_2_PIN, INPUT);
-  pinMode(IR_3_PIN, INPUT);
-  pinMode(IR_4_PIN, INPUT);
+  pinMode(IR_BACK_PIN,  INPUT);
+  pinMode(IR_RIGHT_PIN, INPUT);
+  pinMode(IR_LEFT_PIN,  INPUT);
+  pinMode(IR_FRONT_PIN, INPUT);
   
   pinMode(13, OUTPUT);
   digitalWrite(13, 1);

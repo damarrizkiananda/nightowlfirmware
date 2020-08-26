@@ -148,15 +148,15 @@ void send_to_laptop()
   uint16_t absVY       = (uint16_t)(abs(vy_Copy));
   uint16_t absOmega100 = (uint16_t)(abs(omega100_Copy));
   
-  uint8_t data[13] = {(uint8_t)(absX>>8), (uint8_t)(absX&0x00FF), 
+  uint8_t data[14] = {(uint8_t)(absX>>8), (uint8_t)(absX&0x00FF), 
                       (uint8_t)(absY>>8), (uint8_t)(absY&0x00FF), 
                       (uint8_t)(theta100_Copy>>8), (uint8_t)(theta100_Copy&0x00FF),
                       (uint8_t)(absVX>>8), (uint8_t)(absVX&0x00FF),
                       (uint8_t)(absVY>>8), (uint8_t)(absVY&0x00FF),
                       (uint8_t)(absOmega100>>8), (uint8_t)(absOmega100&0x00FF),
-                      (uint8_t)parity};
+                      (uint8_t)parity, IR_READ};
   // uint8_t data[20] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
-  serial_send_packets(data, 13);
+  serial_send_packets(data, 14);
 
   sendDataPlease = false;
 }
