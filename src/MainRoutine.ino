@@ -122,20 +122,20 @@ void NightOwlControllerMain()
   
 }
 
-char data[3] = {'h','g','z'};
+// char data[3] = {'h','g','z'};
 
-void bluetoothCheck()
-{
-  bluetooth_receive();
-  // if(newDestination)
-  // {
-  //   Serial.println("Data Accepted, Sending Replies");
-  //   for(int i = 0; i<=3; i++) Serial.print(bluetooth_buffer[i]);
-  //   Serial.println();
-  //   //bluetooth_send_packets(data, 3);
-  //   newDestination = false;
-  // }
-}
+// void bluetoothCheck()
+// {
+//   bluetooth_receive();
+//   // if(newDestination)
+//   // {
+//   //   Serial.println("Data Accepted, Sending Replies");
+//   //   for(int i = 0; i<=3; i++) Serial.print(bluetooth_buffer[i]);
+//   //   Serial.println();
+//   //   //bluetooth_send_packets(data, 3);
+//   //   newDestination = false;
+//   // }
+// }
 
 #define AUTOMATIC 0
 #define MANUAL    1
