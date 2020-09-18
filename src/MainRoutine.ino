@@ -88,6 +88,6 @@ void NightOwlLoop()
   }
 
   if(mode == MANUAL) moveRobotLocal(manualVX, manualVY, manualOmega);
-  else moveRobot(robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target);
+  else moveRobotGlobal(robotVelocityX_Target, robotVelocityY_Target, robotOmega_Target);
   
 }

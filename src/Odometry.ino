@@ -31,6 +31,7 @@ void updateVelocityAndPosition()
   lastY = y_Real;
   lastYaw = theta_Real;
 
+  // Blink LED
   counter++;
   if(counter>20)
   {
