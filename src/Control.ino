@@ -28,15 +28,15 @@ void regression()
 #define L 30
 
 /* Important Angle in Degree */
-#define delta 60
+#define delta 30
 
 /* This function converts target vx, vy, & omega to wheel linear velocity (global variables) 
  * and then converts wheel velocity to pwm
  */ 
 void inverseKinematics(int vx, int vy, int omega)
 {
-  wheelVelocity1_Target =  cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx + L*omega*TO_RAD;
-  wheelVelocity2_Target = -(-cos(delta*TO_RAD)*vy + sin(delta*TO_RAD)*vx) + L*omega*TO_RAD;
+  wheelVelocity1_Target =  cos(delta*TO_RAD)*vx + sin(delta*TO_RAD)*vy + L*omega*TO_RAD;
+  wheelVelocity2_Target = -cos(delta*TO_RAD)*vx + sin(delta*TO_RAD)*vy + L*omega*TO_RAD;
   wheelVelocity3_Target = -vy + L*omega*TO_RAD;  
 
   regression();
