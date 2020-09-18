@@ -7,7 +7,7 @@ char bluetoothCommand = 'z';
 int manualVX = 0, manualVY = 0, manualOmega = 0, mode = AUTOMATIC;
 int count = 0;
 
-void NightOwlMainEasterEgg()
+void NightOwlLoop()
 {
   serial_receive();
   if(velocityAndPositionUpdated == true)

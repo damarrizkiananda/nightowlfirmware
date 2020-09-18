@@ -42,110 +42,6 @@ void inverseKinematics(int vx, int vy, int omega)
   regression();
 }
 
-/* PID Selector */
-#define XY_PID
-
-#ifdef XY_PID
-void positionPID(int targetX, int targetY, int targetTheta)
-{
-  noInterrupts();
-  InputX = x_Real;
-  InputY = y_Real;
-  InputTheta = theta_Real;
-  auto currentTheta = theta_Real;
-  interrupts();
-
-  if(targetTheta-currentTheta < -180)
-  {
-    targetTheta+=360;
-  }
-
-  if(targetTheta-currentTheta > 180)
-  {
-    targetTheta-=360;
-  }
-
-  SetpointX = targetX;
-  SetpointY = targetY;
-  SetpointTheta = targetTheta;
-
-  positionPIDX.Compute();
-  positionPIDY.Compute();
-  positionPIDTheta.Compute();
-
-  double sin_theta = sin(-currentTheta*TO_RAD);
-  double cos_theta = cos(-currentTheta*TO_RAD);
-  
-  double localOutputX = OutputX*cos_theta - OutputY*sin_theta;
-  double localOutputY = OutputX*sin_theta + OutputY*cos_theta;
-  
-  double totalSpeed = sqrt(localOutputX*localOutputX + localOutputY*localOutputY);
-  if(totalSpeed>MAX_ROBOT_SPEED)
-  {
-    localOutputX = localOutputX/totalSpeed;
-    localOutputY = localOutputY/totalSpeed;
-
-    localOutputX = localOutputX*MAX_ROBOT_SPEED;
-    localOutputY = localOutputY*MAX_ROBOT_SPEED;
-  }
-
-  inverseKinematics(localOutputX, localOutputY, OutputTheta);
-  
-  /* With Motor Velocity Control */
-  //motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
-
-  /* Without motor Velocity control */
-  robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
-  //robotMotorWrite(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target); 
-}
-#else
-void positionPID(int targetX, int targetY, int targetTheta)
-{
-  noInterrupts();
-  auto currentX = x_Real;
-  auto currentY = y_Real;
-  auto currentTheta = theta_Real;
-  interrupts();
-
-  if(targetTheta-currentTheta < -180)
-  {
-    targetTheta+=360;
-  }
-  if(targetTheta-currentTheta > 180)
-  {
-    targetTheta-=360;
-  }
-
-  InputR = sqrt(currentX*currentX + currentY*currentY);
-  double phi = atan((targetY-currentY)/(targetX-currentX));
-  InputTheta = currentTheta;
-
-  SetpointR = sqrt(targetX*targetX + targetY*targetY);
-  SetpointTheta = targetTheta;
-
-  positionPIDR.Compute();
-  positionPIDTheta.Compute();
-
-  double OutputX = OutputR * sin(phi);
-  double OutputY = OutputR * cos(phi);
-
-  double sin_theta = sin(-currentTheta*TO_RAD);
-  double cos_theta = cos(-currentTheta*TO_RAD);
-  
-  double localOutputX = OutputX*cos_theta - OutputY*sin_theta;
-  double localOutputY = OutputX*sin_theta + OutputY*cos_theta;
-
-  inverseKinematics(localOutputX, localOutputY, OutputTheta);
-  
-  /* With Motor Velocity Control */
-  //motorPID(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
-
-  /* Without motor Velocity control */
-  robotMotorWrite(wheelVelocity1_Target,wheelVelocity2_Target,wheelVelocity3_Target);
-  
-}
-#endif
-
 void moveRobot(int vX, int vY, float omega)
 {
   float omega_f = omega;
@@ -164,20 +60,20 @@ void moveRobot(int vX, int vY, float omega)
   double sin_theta = sin(-currentTheta*TO_RAD);
   double cos_theta = cos(-currentTheta*TO_RAD);
   
-  double localOutputX = vX*cos_theta - vY*sin_theta;
-  double localOutputY = vX*sin_theta + vY*cos_theta;
+  double globalOutputX = vX*cos_theta - vY*sin_theta;
+  double globalOutputY = vX*sin_theta + vY*cos_theta;
   
-  double totalSpeed = sqrt(localOutputX*localOutputX + localOutputY*localOutputY);
+  double totalSpeed = sqrt(globalOutputX*globalOutputX + globalOutputY*globalOutputY);
   if(totalSpeed>MAX_ROBOT_SPEED)
   {
-    localOutputX = localOutputX/totalSpeed;
-    localOutputY = localOutputY/totalSpeed;
+    globalOutputX = globalOutputX/totalSpeed;
+    globalOutputY = globalOutputY/totalSpeed;
 
-    localOutputX = localOutputX*MAX_ROBOT_SPEED;
-    localOutputY = localOutputY*MAX_ROBOT_SPEED;
+    globalOutputX = globalOutputX*MAX_ROBOT_SPEED;
+    globalOutputY = globalOutputY*MAX_ROBOT_SPEED;
   }
 
-  inverseKinematics(localOutputX, localOutputY, omega);
+  inverseKinematics(globalOutputX, globalOutputY, omega);
   robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
 }
 
@@ -192,61 +88,19 @@ void moveRobotLocal(int vX, int vY, float omega)
   vY = constrain(vY, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
   omega = constrain(omega, -MAX_ROBOT_OMEGA, MAX_ROBOT_OMEGA);
   
-  double localOutputX = vX;
-  double localOutputY = vY;
+  double globalOutputX = vX;
+  double globalOutputY = vY;
   
-  double totalSpeed = sqrt(localOutputX*localOutputX + localOutputY*localOutputY);
+  double totalSpeed = sqrt(globalOutputX*globalOutputX + globalOutputY*globalOutputY);
   if(totalSpeed>MAX_ROBOT_SPEED)
   {
-    localOutputX = localOutputX/totalSpeed;
-    localOutputY = localOutputY/totalSpeed;
+    globalOutputX = globalOutputX/totalSpeed;
+    globalOutputY = globalOutputY/totalSpeed;
 
-    localOutputX = localOutputX*MAX_ROBOT_SPEED;
-    localOutputY = localOutputY*MAX_ROBOT_SPEED;
+    globalOutputX = globalOutputX*MAX_ROBOT_SPEED;
+    globalOutputY = globalOutputY*MAX_ROBOT_SPEED;
   }
 
-  inverseKinematics(localOutputX, localOutputY, omega);
+  inverseKinematics(globalOutputX, globalOutputY, omega);
   robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
-}
-
-// void motorPID(int target1, int target2, int target3)
-// { 
-//   Setpoint1 = target1;
-//   Setpoint2 = target2;
-//   Setpoint3 = target3;
-
-//   noInterrupts();
-//   Input1 = wheelVelocity1_Real;
-//   Input2 = wheelVelocity2_Real;
-//   Input3 = wheelVelocity3_Real;
-//   interrupts();
-
-//   motorPID1.Compute();
-//   motorPID2.Compute();
-//   motorPID3.Compute();
-
-//   robotMotorWrite(Output1, Output2, Output3);
-// }
-
-
-/* Motion filter to filter motions and compliance */
-/* Higher filter value -> Smoother and slower response */
-
-/* Usage
- * 
- * float rawVal; // unfiltered value
- * float filteredVal; // filtered output
- * float filteredValPrev; // bookmarked previous value
- * int filter = 10;
- *
- * In the loop:
- * 
- * filteredVal = filter(filteredValPrev, rawVal, filter);
- * filteredValPrev = filteredVal;
- * 
- */
-
-float filter(float prevValue, float currentValue, int filter) {  
-  float lengthFiltered =  (prevValue + (currentValue * filter)) / (filter + 1);  
-  return lengthFiltered;  
 }

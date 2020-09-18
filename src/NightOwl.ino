@@ -5,10 +5,6 @@
 #include <PID_v1.h>
 #include <FlexiTimer2.h>
 #include <Encoder.h>
-#include <SimpleKalmanFilter.h>
-
-SimpleKalmanFilter simpleKalmanFilterX(0.5, 0.5, 0.001);
-SimpleKalmanFilter simpleKalmanFilterY(1, 1, 0.001);
 
 Encoder enc1(10, 9);
 Encoder enc3(11, 12);
@@ -71,59 +67,6 @@ int motorPwm1, motorPwm2, motorPwm3;
 bool sendDataPlease;
 bool velocityAndPositionUpdated;
 
-// #define WAITING_FOR_NEW_DESTINATION 0
-// #define MOVING 1
-
-// uint8_t robotState = MOVING;
-// bool arrived;
-
-// bool newDestination;
-// uint8_t destination; 
-// #define HONEYWELL 1
-// #define FO        2
-// #define Toilet    3
-
-// /* Motor Velocity Control */ 
-// double Setpoint1, Input1, Output1;
-// double Kp1=0.5, Ki1=1.5, Kd1=0.001;
-// PID motorPID1(&Input1, &Output1, &Setpoint1, Kp1, Ki1, Kd1, DIRECT);
-
-// double Setpoint2, Input2, Output2;
-// double Kp2=0.5, Ki2=1.5, Kd2=0.001;
-// PID motorPID2(&Input2, &Output2, &Setpoint2, Kp2, Ki2, Kd2, DIRECT);
-
-// double Setpoint3, Input3, Output3;
-// double Kp3=0.5, Ki3=1.5, Kd3=0.001;
-// PID motorPID3(&Input3, &Output3, &Setpoint3, Kp3, Ki3, Kd3, DIRECT);
-
-// /* Robot Velocity Control */
-// double SetpointVX, InputVX, OutputVX;
-// double KpVX=8, KiVX=1, KdVX=0.001;
-// PID velocityXPID(&InputVX, &OutputVX, &SetpointVX, KpVX, KiVX, KdVX, DIRECT);
-
-// double SetpointVY, InputVY, OutputVY;
-// double KpVY=8, KiVY=1, KdVY=0.001;
-// PID velocityYPID(&InputVY, &OutputVY, &SetpointVY, KpVY, KiVY, KdVY, DIRECT);
-
-// double SetpointOmega, InputOmega, OutputOmega;
-// double KpOmega=8, KiOmega=1, KdOmega=0.001;
-// PID omegaPID(&InputOmega, &OutputOmega, &SetpointOmega, KpOmega, KiOmega, KdOmega, DIRECT);
-
-
-/* Robot Position Control */
-double SetpointX, InputX, OutputX;
-double KpX=15, KiX=0.1, KdX=0.001;
-PID positionPIDX(&InputX, &OutputX, &SetpointX, KpX, KiX, KdX, DIRECT);
-
-double SetpointY, InputY, OutputY;
-double KpY=15, KiY=0.1, KdY=0.001;
-PID positionPIDY(&InputY, &OutputY, &SetpointY, KpY, KiY, KdY, DIRECT);
-
-double SetpointTheta, InputTheta, OutputTheta;
-double KpTheta=5, KiTheta=3.6, KdTheta=0.001;
-PID positionPIDTheta(&InputTheta, &OutputTheta, &SetpointTheta, KpTheta, KiTheta, KdTheta, DIRECT);
-
-
 /* Conversion Constants */
 #define TO_DEG    57.29577951308
 #define TO_RAD    0.01745329252
@@ -170,17 +113,8 @@ void setup()
   Serial.begin(115200);
   Serial.setTimeout(100);
 
-  FlexiTimer2::set(TIMER_INTERRUPT_PERIOD, 1.0/1000, updateVelocityAndPosition); // call every 100 1ms "ticks"
-  // FlexiTimer2::set(500, flash); // MsTimer2 style is also supported
+  FlexiTimer2::set(TIMER_INTERRUPT_PERIOD, 1.0/1000, updateVelocityAndPosition); // call every 50 1ms "ticks"
   FlexiTimer2::start();
-
-  // motorPID1.SetMode(AUTOMATIC); motorPID1.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
-  // motorPID2.SetMode(AUTOMATIC); motorPID2.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
-  // motorPID3.SetMode(AUTOMATIC); motorPID3.SetOutputLimits(-255,255); motorPID1.SetSampleTime(50);
-
-  positionPIDX.SetMode(AUTOMATIC); positionPIDX.SetOutputLimits(-MAX_ROBOT_SPEED,MAX_ROBOT_SPEED); positionPIDX.SetSampleTime(50);
-  positionPIDY.SetMode(AUTOMATIC); positionPIDY.SetOutputLimits(-MAX_ROBOT_SPEED,MAX_ROBOT_SPEED); positionPIDY.SetSampleTime(50);
-  positionPIDTheta.SetMode(AUTOMATIC); positionPIDTheta.SetOutputLimits(-MAX_ROBOT_OMEGA,MAX_ROBOT_OMEGA); positionPIDTheta.SetSampleTime(50);
 
   getThetaBNO055Deg();
 }
@@ -188,19 +122,5 @@ void setup()
 
 void loop()  
 {
-  // Serial.println(IR_READ,BIN);
-  // delay(500);
-  // NightOwlMain();
-  NightOwlMainEasterEgg();
-  // vibeCheck();
-  // bluetoothCheck();
-  // timerCheck();
-  // odometryCheck();
-  // inverseCheck();
-  // mainMain();
-  // goToDestination();
-  // delay(10);
-  // bluetooth_receive();
-  // wheelVelocityRegression();
-  // checkRobotOmega();
+  NightOwlLoop();
 }
