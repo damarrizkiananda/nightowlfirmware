@@ -58,7 +58,4 @@ void calculatePosition()
        
   x_Real = (x_count * DIST_PER_PULSE);
   y_Real = (y_count * DIST_PER_PULSE);
-
-  // x_Real = simpleKalmanFilterX.updateEstimate(x_Measured);
-  // y_Real = simpleKalmanFilterY.updateEstimate(y_Measured);
 }
