@@ -42,15 +42,15 @@ void inverseKinematics(int vx, int vy, int omega)
   regression();
 }
 
-void moveRobotGlobal(int vX, int vY, float omega)
+void moveRobotGlobal(int vx_Global, int vy_Global, float omega)
 {
   float omega_f = omega;
   omega_f = omega_f/100;
   omega_f = omega_f*TO_DEG;
   omega = omega_f;
 
-  vX = constrain(vX, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
-  vY = constrain(vY, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+  vx_Global = constrain(vx_Global, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+  vy_Global = constrain(vy_Global, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
   omega = constrain(omega, -MAX_ROBOT_OMEGA, MAX_ROBOT_OMEGA);
 
   noInterrupts();
@@ -60,44 +60,44 @@ void moveRobotGlobal(int vX, int vY, float omega)
   double sin_theta = sin(currentTheta*TO_RAD);
   double cos_theta = cos(currentTheta*TO_RAD);
   
-  double globalOutputX = vX*cos_theta + vY*sin_theta;
-  double globalOutputY = -vX*sin_theta + vY*cos_theta;
+  double vx_Local = vx_Global*cos_theta + vy_Global*sin_theta;
+  double vy_Local = -vx_Global*sin_theta + vy_Global*cos_theta;
   
-  double totalSpeed = sqrt(globalOutputX*globalOutputX + globalOutputY*globalOutputY);
+  double totalSpeed = sqrt(vx_Local*vx_Local + vy_Local*vy_Local);
   if(totalSpeed>MAX_ROBOT_SPEED)
   {
-    globalOutputX = globalOutputX/totalSpeed;
-    globalOutputY = globalOutputY/totalSpeed;
+    vx_Local = vx_Local/totalSpeed;
+    vy_Local = vy_Local/totalSpeed;
 
-    globalOutputX = globalOutputX*MAX_ROBOT_SPEED;
-    globalOutputY = globalOutputY*MAX_ROBOT_SPEED;
+    vx_Local = vx_Local*MAX_ROBOT_SPEED;
+    vy_Local = vy_Local*MAX_ROBOT_SPEED;
   }
 
-  inverseKinematics(globalOutputX, globalOutputY, omega);
+  inverseKinematics(vx_Local, vy_Local, omega);
   robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
 }
 
-void moveRobotLocal(int vX, int vY, float omega)
+void moveRobotLocal(int vx_Local, int vy_Local, float omega)
 {
   float omega_f = omega;
   omega_f = omega_f/100;
   omega_f = omega_f*TO_DEG;
   omega = omega_f;
 
-  vX = constrain(vX, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
-  vY = constrain(vY, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+  vx_Local = constrain(vx_Local, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+  vy_Local = constrain(vy_Local, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
   omega = constrain(omega, -MAX_ROBOT_OMEGA, MAX_ROBOT_OMEGA);
   
-  double totalSpeed = sqrt(vX*vX + vY*vY);
+  double totalSpeed = sqrt(vx_Local*vx_Local + vy_Local*vy_Local);
   if(totalSpeed>MAX_ROBOT_SPEED)
   {
-    vX = vX/totalSpeed;
-    vY = vY/totalSpeed;
+    vx_Local = vx_Local/totalSpeed;
+    vy_Local = vy_Local/totalSpeed;
 
-    vX = vX*MAX_ROBOT_SPEED;
-    vY = vY*MAX_ROBOT_SPEED;
+    vx_Local = vx_Local*MAX_ROBOT_SPEED;
+    vy_Local = vy_Local*MAX_ROBOT_SPEED;
   }
 
-  inverseKinematics(vX, vY, omega);
+  inverseKinematics(vx_Local, vy_Local, omega);
   robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
 }
