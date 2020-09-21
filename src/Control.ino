@@ -57,11 +57,11 @@ void moveRobotGlobal(int vX, int vY, float omega)
   auto currentTheta = theta_Real;
   interrupts();
 
-  double sin_theta = sin(-currentTheta*TO_RAD);
-  double cos_theta = cos(-currentTheta*TO_RAD);
+  double sin_theta = sin(currentTheta*TO_RAD);
+  double cos_theta = cos(currentTheta*TO_RAD);
   
-  double globalOutputX = vX*cos_theta - vY*sin_theta;
-  double globalOutputY = vX*sin_theta + vY*cos_theta;
+  double globalOutputX = vX*cos_theta + vY*sin_theta;
+  double globalOutputY = -vX*sin_theta + vY*cos_theta;
   
   double totalSpeed = sqrt(globalOutputX*globalOutputX + globalOutputY*globalOutputY);
   if(totalSpeed>MAX_ROBOT_SPEED)
