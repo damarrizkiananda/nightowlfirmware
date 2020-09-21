@@ -39,12 +39,6 @@ byte serial_ndx = 0, serial_recv_len = 0;
 uint8_t serial_buffer[16] = {0};
 
 #define BLUETOOTH_SERIAL Serial5
-#define BLUETOOTH_HEAD   '{'
-#define BLUETOOTH_TAIL   '}'
-bool bluetooth_receiving = false;
-bool bluetooth_new_data = false;
-byte bluetooth_ndx = 0, bluetooth_recv_len = 0;
-uint8_t bluetooth_buffer[16] = {0};
 
 unsigned long now = 0;
 
