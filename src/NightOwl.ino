@@ -2,7 +2,6 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
-#include <PID_v1.h>
 #include <FlexiTimer2.h>
 #include <Encoder.h>
 
@@ -64,18 +63,15 @@ bool velocityAndPositionUpdated;
 /* Conversion Constants */
 #define TO_DEG    57.29577951308
 #define TO_RAD    0.01745329252
-// #define PI        3.1415926535
-// #define TWO_PI    6.2831853071
 
 /*     Dist/pulse = 
  *  Circumference/PPR 
  *       in cm
  */
 #define CIRCUMFERENCE 31.4159265
-// #define PPR 4096.0
-// #define DIST_PER_PULSE 0.0076699025
-#define PPR 1024.0
-#define DIST_PER_PULSE 0.03067961
+#define PPR 4096.0
+#define DIST_PER_PULSE 0.0076699025
+
 
 /* Max robot speed in cm/s */
 #define MAX_ROBOT_SPEED 75
