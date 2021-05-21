@@ -1,4 +1,4 @@
-signed long lastPulse1, lastPulse2, lastPulse3;
+signed long lastCount1, lastCount2, lastCount3;
 double lastX, lastY, lastYaw;
 
 int counter;
@@ -6,17 +6,21 @@ bool ledState;
 
 void updateVelocityAndPosition()
 {
-  encoderPulseDif1 = (int32_t)(enc1.read()/4-lastPulse1);
-  encoderPulseDif2 = (int32_t)(enc2.read()/4-lastPulse2);
-  encoderPulseDif3 = (int32_t)(enc3.read()/4-lastPulse3);
+  enc1_read=enc1.read();
+  enc2_read=enc2.read();
+  enc3_read=enc3.read();
 
-  lastPulse1 = enc1.read()/4;
-  lastPulse2 = enc2.read()/4;
-  lastPulse3 = enc3.read()/4;  
+  encoderCountDif1 = enc1_read-lastCount1;
+  encoderCountDif2 = enc2_read-lastCount2;
+  encoderCountDif3 = enc3_read-lastCount3;
 
-  wheelVelocity1_Real = (double)encoderPulseDif1  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
-  wheelVelocity2_Real = (double)encoderPulseDif2  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
-  wheelVelocity3_Real = (double)encoderPulseDif3  * TWO_PI * 1000.0 / (PPR * TIMER_INTERRUPT_PERIOD);
+  lastCount1 = enc1_read;
+  lastCount2 = enc2_read;
+  lastCount3 = enc3_read;  
+
+  wheelVelocity1_Real = (double)encoderCountDif1  * TWO_PI * 5 * 1000.0 / (CPR * TIMER_INTERRUPT_PERIOD);
+  wheelVelocity2_Real = (double)encoderCountDif2  * TWO_PI * 5 * 1000.0 / (CPR * TIMER_INTERRUPT_PERIOD);
+  wheelVelocity3_Real = (double)encoderCountDif3  * TWO_PI * 5 * 1000.0 / (CPR * TIMER_INTERRUPT_PERIOD);
 
   getThetaBNO055Deg();
   theta_Real = theta_BNO055;
@@ -53,9 +57,9 @@ void calculatePosition()
   sin_theta = sin(theta_Real*TO_RAD);
   cos_theta = cos(theta_Real*TO_RAD);
   
-  y_count += (sqrt3 * sin_theta * (encoderPulseDif1 - encoderPulseDif2) + cos_theta * (encoderPulseDif1 + encoderPulseDif2 - 2 * encoderPulseDif3)) / 3;
-  x_count -= (-sqrt3 * cos_theta * (encoderPulseDif1 - encoderPulseDif2) + sin_theta * (encoderPulseDif1 + encoderPulseDif2 - 2 * encoderPulseDif3)) / 3;
+  y_count += (sqrt3 * sin_theta * (encoderCountDif1 - encoderCountDif2) + cos_theta * (encoderCountDif1 + encoderCountDif2 - 2 * encoderCountDif3)) / 3;
+  x_count -= (-sqrt3 * cos_theta * (encoderCountDif1 - encoderCountDif2) + sin_theta * (encoderCountDif1 + encoderCountDif2 - 2 * encoderCountDif3)) / 3;
        
-  x_Real = (x_count * DIST_PER_PULSE);
-  y_Real = (y_count * DIST_PER_PULSE);
+  x_Real = (x_count * DIST_PER_COUNT);
+  y_Real = (y_count * DIST_PER_COUNT);
 }

@@ -21,7 +21,7 @@ void motorWrite(int pwmInput, int pinA, int pinB)
 
 #define MAX_PWM_STEP 25
 int currentPwm1, currentPwm2, currentPwm3;
-void robotMotorWrite(int pwm1, int pwm2, int pwm3)
+void robotMotorWrite(double pwm1, double pwm2, double pwm3)
 {
   /* Limit Motor Acceleration Step */
   // if(abs(pwm1-currentPwm1)>=MAX_PWM_STEP && abs(pwm1)>=40)

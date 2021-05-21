@@ -9,12 +9,9 @@ Encoder enc1(10, 9);
 Encoder enc3(11, 12);
 Encoder enc2(15, 14);
 
-/* Encoder Pulse Difference*/
-int encoderPulseDif1, encoderPulseDif2, encoderPulseDif3;
-
-/* Linear Wheel Velocity */
-double wheelVelocity1_Real, wheelVelocity2_Real, wheelVelocity3_Real;
-double wheelVelocity1_Target, wheelVelocity2_Target, wheelVelocity3_Target;
+/* Encoder Count Difference*/
+int32_t enc1_read, enc2_read, enc3_read;
+signed long encoderCountDif1, encoderCountDif2, encoderCountDif3;
 
 /* Robot Position */
 double x_Real, y_Real, theta_Real, theta_BNO055, theta_Odo, theta360;
@@ -48,7 +45,7 @@ unsigned long now = 0;
 #define MOTOR_3_A_PIN 7
 #define MOTOR_3_B_PIN 8
 
-int motorPwm1, motorPwm2, motorPwm3;
+double motorPwm1 = 0.0, motorPwm2=0.0, motorPwm3=0.0;
 
 #define IR_BACK_PIN  25
 #define IR_RIGHT_PIN 27 
@@ -64,17 +61,21 @@ bool velocityAndPositionUpdated;
 #define TO_DEG    57.29577951308
 #define TO_RAD    0.01745329252
 
-/*     Dist/pulse = 
- *  Circumference/PPR 
+/*     Dist/count = 
+ *  Circumference/CPR 
  *       in cm
  */
 #define CIRCUMFERENCE 31.4159265
-#define PPR 4096.0
-#define DIST_PER_PULSE 0.0076699025
+#define CPR 4096.0
+#define DIST_PER_COUNT 0.0076699025
+
+double wheelVelocity1_Real = 0.0, wheelVelocity1_Target = 0.0, wheelVelocity1_Error = 0.0, wheelVelocity1_Prev_Error = 0.0, wheelVelocity1_Error_Sum = 0.0;
+double wheelVelocity2_Real = 0.0, wheelVelocity2_Target = 0.0, wheelVelocity2_Error = 0.0, wheelVelocity2_Prev_Error = 0.0, wheelVelocity2_Error_Sum = 0.0;
+double wheelVelocity3_Real = 0.0, wheelVelocity3_Target = 0.0, wheelVelocity3_Error = 0.0, wheelVelocity3_Prev_Error = 0.0, wheelVelocity3_Error_Sum = 0.0;
 
 
 /* Max robot speed in cm/s */
-#define MAX_ROBOT_SPEED 75
+#define MAX_ROBOT_SPEED 60
 
 /* Max robot omega in deg/s */
 #define MAX_ROBOT_OMEGA 60
