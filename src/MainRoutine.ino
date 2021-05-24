@@ -10,52 +10,53 @@ int manualVX = 0, manualVY = 0, manualOmega = 0, mode = INDEPENDENT_WHEEL;
 int count=0;
 void NightOwlLoop()
 {
-  // serial_receive();
+  serial_receive();
   if(velocityAndPositionUpdated == true)
   {
-    // send_to_laptop();  
+    send_to_laptop();  
     // Serial.print(digitalRead(IR_FRONT_PIN));
     // Serial.print(digitalRead(IR_BACK_PIN));
     // Serial.print(digitalRead(IR_RIGHT_PIN));
     // Serial.println(digitalRead(IR_LEFT_PIN));
-    if(((wheelVelocity1_Target || wheelVelocity2_Target || wheelVelocity3_Target) != 0) && count <= 250){
-      Serial.println(wheelVelocity3_Real);
-      if(count >= 50 && count < 100){
-        // bluetoothCommand = 's';
-        wheelVelocity1_Target = 20;
-        wheelVelocity2_Target = 20;
-        wheelVelocity3_Target = 20;
-      }
-      else if(count >= 100 && count < 150){
-        // bluetoothCommand = 's';
-        wheelVelocity1_Target = 40;
-        wheelVelocity2_Target = 40;
-        wheelVelocity3_Target = 40;
-      }
-      else if(count >= 150 && count < 200){
-        // bluetoothCommand = 's';
-        wheelVelocity1_Target = 60;
-        wheelVelocity2_Target = 60;
-        wheelVelocity3_Target = 60;
-      }
-      else if(count >= 200 && count < 250){
-        // bluetoothCommand = 's';
-        wheelVelocity1_Target = 30;
-        wheelVelocity2_Target = 30;
-        wheelVelocity3_Target = 30;
-      }
-      else if(count >= 250){
-        // bluetoothCommand = 's';
-        wheelVelocity1_Target = 0;
-        wheelVelocity2_Target = 0;
-        wheelVelocity3_Target = 0;
-      }
-      count++;
-    }
-    else if(count > 250 && count < 300){
-      Serial.println(wheelVelocity3_Real);
-      count++;
-    }
+    // if(((wheelVelocity1_Target || wheelVelocity2_Target || wheelVelocity3_Target) != 0) && count <= 250){
+    //   Serial.println(wheelVelocity3_Real);
+    //   if(count >= 50 && count < 100){
+    //     // bluetoothCommand = 's';
+    //     wheelVelocity1_Target = 20;
+    //     wheelVelocity2_Target = 20;
+    //     wheelVelocity3_Target = 20;
+    //   }
+    //   else if(count >= 100 && count < 150){
+    //     // bluetoothCommand = 's';
+    //     wheelVelocity1_Target = 40;
+    //     wheelVelocity2_Target = 40;
+    //     wheelVelocity3_Target = 40;
+    //   }
+    //   else if(count >= 150 && count < 200){
+    //     // bluetoothCommand = 's';
+    //     wheelVelocity1_Target = 60;
+    //     wheelVelocity2_Target = 60;
+    //     wheelVelocity3_Target = 60;
+    //   }
+    //   else if(count >= 200 && count < 250){
+    //     // bluetoothCommand = 's';
+    //     wheelVelocity1_Target = 30;
+    //     wheelVelocity2_Target = 30;
+    //     wheelVelocity3_Target = 30;
+    //   }
+    //   else if(count >= 250){
+    //     // bluetoothCommand = 's';
+    //     wheelVelocity1_Target = 0;
+    //     wheelVelocity2_Target = 0;
+    //     wheelVelocity3_Target = 0;
+    //   }
+    //   count++;
+    // }
+    // else if(count > 250 && count < 300){
+    //   Serial.println(wheelVelocity3_Real);
+    //   count++;
+    // }
+
       // if(count >= 200 && count <=250){
       //   count++;
       //   // bluetoothCommand = 's';
