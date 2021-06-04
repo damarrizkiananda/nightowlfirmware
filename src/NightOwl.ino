@@ -52,7 +52,7 @@ double motorPwm1 = 0.0, motorPwm2=0.0, motorPwm3=0.0;
 #define IR_LEFT_PIN  29
 #define IR_FRONT_PIN 31 
 
-#define IR_READ ((!digitalRead(IR_BACK_PIN)) | ((!digitalRead(IR_FRONT_PIN))<<1) | ((!digitalRead(IR_LEFT_PIN))<<2) | ((!digitalRead(IR_RIGHT_PIN))<<3))
+uint8_t IR_READ = ((!digitalRead(IR_BACK_PIN)) | ((!digitalRead(IR_FRONT_PIN))<<1) | ((!digitalRead(IR_LEFT_PIN))<<2) | ((!digitalRead(IR_RIGHT_PIN))<<3));
 
 bool sendDataPlease;
 bool velocityAndPositionUpdated;
@@ -67,11 +67,12 @@ bool velocityAndPositionUpdated;
  */
 #define CIRCUMFERENCE 31.4159265
 #define CPR 4096.0
-#define DIST_PER_COUNT 0.0076699025
+#define DIST_PER_COUNT 0.0076699025 //  from calculating
+// #define DIST_PER_COUNT 0.007428623 // from calibrating
 
-double wheelVelocity1_Real = 0.0, wheelVelocity1_Target = 0.0, wheelVelocity1_Error = 0.0, wheelVelocity1_Prev_Error = 0.0, wheelVelocity1_Error_Sum = 0.0;
-double wheelVelocity2_Real = 0.0, wheelVelocity2_Target = 0.0, wheelVelocity2_Error = 0.0, wheelVelocity2_Prev_Error = 0.0, wheelVelocity2_Error_Sum = 0.0;
-double wheelVelocity3_Real = 0.0, wheelVelocity3_Target = 0.0, wheelVelocity3_Error = 0.0, wheelVelocity3_Prev_Error = 0.0, wheelVelocity3_Error_Sum = 0.0;
+double wheelVelocity1_Real = 0.0, wheelVelocity1_Target = 0.0, wheelVelocity1_Error = 0.0, wheelVelocity1_Prev_Error = 0.0, wheelVelocity1_Error_Sum = 0.0, wheelVelocity1_Prev_Target = 0.0, wheelAcc1 = 0.0;
+double wheelVelocity2_Real = 0.0, wheelVelocity2_Target = 0.0, wheelVelocity2_Error = 0.0, wheelVelocity2_Prev_Error = 0.0, wheelVelocity2_Error_Sum = 0.0, wheelVelocity2_Prev_Target = 0.0, wheelAcc2 = 0.0;
+double wheelVelocity3_Real = 0.0, wheelVelocity3_Target = 0.0, wheelVelocity3_Error = 0.0, wheelVelocity3_Prev_Error = 0.0, wheelVelocity3_Error_Sum = 0.0, wheelVelocity3_Prev_Target = 0.0, wheelAcc3 = 0.0;
 
 
 /* Max robot speed in cm/s */
@@ -103,9 +104,6 @@ void setup()
   
   Serial.begin(115200);
   Serial.setTimeout(100);
-
-  FlexiTimer2::set(TIMER_INTERRUPT_PERIOD, 1.0/1000, updateVelocityAndPosition); // call every 50 1ms "ticks"
-  FlexiTimer2::start();
 
   getThetaBNO055Deg();
 }
