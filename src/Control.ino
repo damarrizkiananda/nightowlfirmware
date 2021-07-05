@@ -17,89 +17,49 @@
  * 
  */
 
-/* PID Constants*/
-// trial and error tuning:
-// double kp1 = 1.2, ki1 = 0.000032, kd1 = 1.5;
-// double kp2 = 1.2, ki2 = 0.000031, kd2 = 1.5;
-// double kp3 = 1.2, ki3 = 0.000031, kd3 = 1.5;
-
-//discrete PI:
-double kp1 = 0.507, ki1 = 6.95;
-double kp2 = 0.496, ki2 = 7.14;
-double kp3 = 0.702, ki3 = 7.0;
-double prevPWM1 = 0.0;
-double prevPWM2 = 0.0;
-double prevPWM3 = 0.0;
+// double kp[3] = {1.2, 1.2, 1.2}, ki[3] = {0.000031, 0.000031, 0.000031}, kd[3] = {1.5, 1.5, 1.5}; // Continuous PID constants
+double kp[3] = {0.168, 0.182, 0.816}, ki[3] = {6.72, 7.27, 6.68}; // Discrete PI constants
+double prevPWM[3] = {0.0, 0.0, 0.0};
 int current_time = 0, prev_time=0;
+
 void regression()
 {
-  motorPwm1 = wheelVelocity1_Target/0.4617 + 2.2108/0.4617;
-  motorPwm2 = wheelVelocity2_Target/0.4275 + 1.544/0.4275;
-  motorPwm3 = wheelVelocity3_Target/0.4541 + 0.7405/0.4541;
+  motorPwm[0] = wheelVelocity_Target[0]/0.4617 + 2.2108/0.4617;
+  motorPwm[1] = wheelVelocity_Target[1]/0.4275 + 1.544/0.4275;
+  motorPwm[2] = wheelVelocity_Target[2]/0.4541 + 0.7405/0.4541;
 }
 
 void velocityToPwm(){
-  wheelVelocity1_Error = wheelVelocity1_Target - wheelVelocity1_Real;
-  wheelVelocity2_Error = wheelVelocity2_Target - wheelVelocity2_Real;
-  wheelVelocity3_Error = wheelVelocity3_Target - wheelVelocity3_Real;
-  
-  
-  wheelVelocity1_Error_Sum += wheelVelocity1_Error;
-  wheelVelocity2_Error_Sum += wheelVelocity2_Error;
-  wheelVelocity3_Error_Sum += wheelVelocity3_Error;
-    
-  // motorPwm1 = wheelVelocity1_Error * kp1 + wheelVelocity1_Error_Sum * ki1 + (wheelVelocity1_Error - wheelVelocity1_Prev_Error) * kd1;
-  // motorPwm2 = wheelVelocity2_Error * kp2 + wheelVelocity2_Error_Sum * ki2 + (wheelVelocity2_Error - wheelVelocity2_Prev_Error) * kd2;
-  // motorPwm3 = wheelVelocity3_Error * kp3 + wheelVelocity3_Error_Sum * ki3 + (wheelVelocity3_Error - wheelVelocity3_Prev_Error) * kd3;
+  for(int i = 0; i < 3; i++){
+    wheelVelocity_Error[i] = wheelVelocity_Target[i] - wheelVelocity_Real_50[i];
+    wheelVelocity_Error_Sum[i] += wheelVelocity_Error[i];
+    // motorPwm[i] = wheelVelocity_Error[i] * kp[i] + wheelVelocity_Error_Sum[i] * ki[i] + (wheelVelocity_Error[i] - wheelVelocity_Prev_Error[i]) * kd[i];
+  }
   current_time = millis();
   if(current_time - prev_time >= 50){
-    // motorPwm1 = prevPWM1 + wheelVelocity1_Error * (kp1 + ki1 * 0.05) - wheelVelocity1_Prev_Error * kp1;
-    // motorPwm2 = prevPWM2 + wheelVelocity2_Error * (kp2 + ki2 * 0.05) - wheelVelocity2_Prev_Error * kp2;
-    // motorPwm3 = prevPWM3 + wheelVelocity3_Error * (kp3 + ki3 * 0.05) - wheelVelocity3_Prev_Error * kp3;
-
-    motorPwm1 = prevPWM1 + wheelVelocity1_Error * kp1 + wheelVelocity1_Prev_Error * (ki1 * 0.05 - kp1);
-    motorPwm2 = prevPWM2 + wheelVelocity2_Error * kp2 + wheelVelocity2_Prev_Error * (ki2 * 0.05 - kp2);
-    motorPwm3 = prevPWM3 + wheelVelocity3_Error * kp3 + wheelVelocity3_Prev_Error * (ki3 * 0.05 - kp3);
-    
-    motorPwm1 = constrain(motorPwm1, -255, 255);
-    motorPwm2 = constrain(motorPwm2, -255, 255);
-    motorPwm3 = constrain(motorPwm3, -255, 255);
-
-    prevPWM1 = motorPwm1;
-    prevPWM2 = motorPwm2;
-    prevPWM3 = motorPwm3;
-    wheelVelocity1_Prev_Error = wheelVelocity1_Error;
-    wheelVelocity2_Prev_Error = wheelVelocity2_Error;
-    wheelVelocity3_Prev_Error = wheelVelocity3_Error;
+    for(int i = 0; i < 3; i++){
+      motorPwm[i] = prevPWM[i] + wheelVelocity_Error[i] * kp[i] + wheelVelocity_Prev_Error[i] * (ki[i] * 0.05 - kp[i]);
+      motorPwm[i] = constrain(motorPwm[i], -255, 255);
+      prevPWM[i] = motorPwm[i];
+      wheelVelocity_Prev_Error[i] = wheelVelocity_Error[i];
+    }
     prev_time = current_time;
   }
     
 
-  if(abs(wheelVelocity1_Real) < 3 && wheelVelocity1_Target == 0){
-    motorPwm1 = 0;
-    // wheelVelocity1_Error_Sum = 0;
-    wheelVelocity1_Prev_Error = 0.0;
-    wheelVelocity1_Error = 0.0;
-    prevPWM1 = 0.0;
-  }
-  if(abs(wheelVelocity2_Real) < 3 && wheelVelocity2_Target == 0){
-    motorPwm2 = 0;
-    // wheelVelocity2_Error_Sum = 0;
-    wheelVelocity2_Prev_Error = 0.0;
-    wheelVelocity2_Error = 0.0;
-    prevPWM2 = 0.0;
-  }
-  if(abs(wheelVelocity3_Real) < 3 && wheelVelocity3_Target == 0){
-    motorPwm3 = 0;
-    // wheelVelocity3_Error_Sum = 0;
-    wheelVelocity3_Prev_Error = 0.0;
-    wheelVelocity3_Error = 0.0;
-    prevPWM3 = 0.0;
+  for(int i = 0; i < 3; i++){
+    if(abs(wheelVelocity_Real[i]) < 3 && wheelVelocity_Target[i] == 0){
+      motorPwm[i] = 0;
+      // wheelVelocity1_Error_Sum = 0;
+      wheelVelocity_Prev_Error[i] = 0.0;
+      wheelVelocity_Error[i] = 0.0;
+      prevPWM[i] = 0.0;
+    }
   }
 }
 
 /* Distance between the center of the robot to the wheels in cm */
-#define L 30
+#define L 20
 
 /* Important Angle in Degree */
 #define delta 30
@@ -109,9 +69,9 @@ void velocityToPwm(){
  */ 
 void inverseKinematics(int vx, int vy, int omega)
 {
-  wheelVelocity1_Target =  cos(delta*TO_RAD)*vx + sin(delta*TO_RAD)*vy + L*omega*TO_RAD;
-  wheelVelocity2_Target = -cos(delta*TO_RAD)*vx + sin(delta*TO_RAD)*vy + L*omega*TO_RAD;
-  wheelVelocity3_Target = -vy + L*omega*TO_RAD;  
+  wheelVelocity_Target[0] =  cos(delta*TO_RAD)*vx + sin(delta*TO_RAD)*vy + L*omega*TO_RAD;
+  wheelVelocity_Target[1] = (-cos(delta*TO_RAD)*vx + sin(delta*TO_RAD)*vy + L*omega*TO_RAD)*0.96;
+  wheelVelocity_Target[2] = (-vy + L*omega*TO_RAD)*1.03;  
 
   // regression();
   // velocityToPwm();
@@ -146,7 +106,8 @@ void moveRobotGlobal(int vx_Global, int vy_Global, float omega)
   }
 
   inverseKinematics(vx_Local, vy_Local, omega);
-  robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
+  velocityToPwm();
+  robotMotorWrite(motorPwm[0], motorPwm[1], motorPwm[2]);
 }
 
 void moveRobotLocal(int vx_Local, int vy_Local, float omega)
@@ -173,78 +134,21 @@ void moveRobotLocal(int vx_Local, int vy_Local, float omega)
   const double dcc_thresh = acc_thresh*1.49;  //m/s^2
   float acc_thresh_ratio = 1;
    
-  wheelAcc1 = wheelVelocity1_Target - wheelVelocity1_Prev_Target;
-  float acc_thresh_ratio_temp = 0;
-  if( wheelAcc1*wheelVelocity1_Prev_Target>=0 ) //speed up
-    acc_thresh_ratio_temp = fabs(wheelAcc1)/acc_thresh;
-  else                                 //speed down
-    acc_thresh_ratio_temp = fabs(wheelAcc1)/dcc_thresh;
-  if( acc_thresh_ratio_temp>acc_thresh_ratio ){
-    wheelAcc1/= acc_thresh_ratio_temp;
-    wheelVelocity1_Target = wheelVelocity1_Prev_Target + wheelAcc1;
+  // Acceleration limit
+  for (int i = 0; i < 3; i++){
+    wheelAcc[i] = wheelVelocity_Target[i] - wheelVelocity_Prev_Target[i];
+    float acc_thresh_ratio_temp = 0;
+    if( wheelAcc[i]*wheelVelocity_Prev_Target[i]>=0 ) //speed up
+      acc_thresh_ratio_temp = fabs(wheelAcc[i])/acc_thresh;
+    else                                 //speed down
+      acc_thresh_ratio_temp = fabs(wheelAcc[i])/dcc_thresh;
+    if( acc_thresh_ratio_temp>acc_thresh_ratio ){
+      wheelAcc[i]/= acc_thresh_ratio_temp;
+      wheelVelocity_Target[i] = wheelVelocity_Prev_Target[i] + wheelAcc[i];
+    }
+    wheelVelocity_Prev_Target[i] = wheelVelocity_Target[i];
   }
-
-  wheelAcc2 = wheelVelocity2_Target - wheelVelocity2_Prev_Target;
-  acc_thresh_ratio_temp = 0;
-  if( wheelAcc2*wheelVelocity2_Prev_Target>=0 ) //speed up
-    acc_thresh_ratio_temp = fabs(wheelAcc2)/acc_thresh;
-  else                                 //speed down
-    acc_thresh_ratio_temp = fabs(wheelAcc2)/dcc_thresh;
-  if( acc_thresh_ratio_temp>acc_thresh_ratio ){
-    wheelAcc2/= acc_thresh_ratio_temp;
-    wheelVelocity2_Target = wheelVelocity2_Prev_Target + wheelAcc2;
-  }
-
-  wheelAcc3 = wheelVelocity3_Target - wheelVelocity3_Prev_Target;
-  acc_thresh_ratio_temp = 0;
-  if( wheelAcc3*wheelVelocity3_Prev_Target>=0 ) //speed up
-    acc_thresh_ratio_temp = fabs(wheelAcc3)/acc_thresh;
-  else                                 //speed down
-    acc_thresh_ratio_temp = fabs(wheelAcc3)/dcc_thresh;
-  if( acc_thresh_ratio_temp>acc_thresh_ratio ){
-    wheelAcc3/= acc_thresh_ratio_temp;
-    wheelVelocity3_Target = wheelVelocity3_Prev_Target + wheelAcc3;
-  }
-//            acc_thresh_ratio = acc_thresh_ratio_temp;
-    ////bad programming
-
-//    if( acc_thresh_ratio > 1 )
-//    {
-//        for(int i=0; i<WHEELS; i++)
-//        {
-//            wheel_acc[i] /= acc_thresh_ratio;
-//            wheel_speed[i] = wheel_speed_old[i] + wheel_acc[i];
-//        }
-//    }
-    
-
-    // if(hypot(Vx,Vy)*fabs(_w)*0.03>_acc_thresh) //kinda weird
-    // {
-    //     float v_wheel=0;
-    //     for(int i=0; i<WHEELS; i++)
-    //     {
-    //         if( fabs(wheel_speed[i])>v_wheel )
-    //             v_wheel = fabs(wheel_speed[i]);
-    //     }
-    //     if(v_wheel<_acc_thresh)
-    //         v_wheel = _acc_thresh;
-    //     for(int i=0; i<WHEELS; i++)
-    //         wheel_speed[i] *= (1-_acc_thresh/v_wheel);
-
-    //     Vx =-0.57735*  wheel_speed[0] + 0.57735*wheel_speed[1]  + 0      *wheel_speed[2];
-    //     Vy = 0.33333*  wheel_speed[0] + 0.33333*wheel_speed[1]  - 0.66666*wheel_speed[2];
-    //     _w  = 1.7094*  wheel_speed[0] + 1.7094*wheel_speed[1]  + 1.7094*wheel_speed[2];
-    // }
-    // if(use_convected_acc) //more weird
-    // {
-    //     float temp = Vx;
-    //     Vx -= -Vy*_w*0.1;
-    //     Vy -= temp*_w*0.1;
-    // }
-  wheelVelocity1_Prev_Target = wheelVelocity1_Target;
-  wheelVelocity2_Prev_Target = wheelVelocity2_Target;
-  wheelVelocity3_Prev_Target = wheelVelocity3_Target;
 
   velocityToPwm();
-  robotMotorWrite(motorPwm1, motorPwm2, motorPwm3);
+  robotMotorWrite(motorPwm[0], motorPwm[1], motorPwm[2]);
 }

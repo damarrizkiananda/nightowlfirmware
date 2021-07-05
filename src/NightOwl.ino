@@ -10,8 +10,8 @@ Encoder enc3(11, 12);
 Encoder enc2(15, 14);
 
 /* Encoder Count Difference*/
-int32_t enc1_read, enc2_read, enc3_read;
-signed long encoderCountDif1, encoderCountDif2, encoderCountDif3;
+int32_t enc_read[3] = {0, 0, 0}, enc_read_50[3] = {0, 0, 0};
+signed long encoderCountDif[3], encoderCountDif_50[3];
 
 /* Robot Position */
 double x_Real, y_Real, theta_Real, theta_BNO055, theta_Odo, theta360;
@@ -20,12 +20,16 @@ double x_Real, y_Real, theta_Real, theta_BNO055, theta_Odo, theta360;
 double robotVelocityX_Target = 0, robotVelocityY_Target = 0, robotOmega_Target = 0;
 double robotVelocityX_Real, robotVelocityY_Real, robotOmega_Real;
 
-#define TIMER_INTERRUPT_PERIOD 50.0 // 20 Hz
+#define TIMER_INTERRUPT_PERIOD 10.0 // 100 Hz
 
 /* Set the delay between fresh samples */
 uint16_t BNO055_SAMPLERATE_DELAY_MS = 25;
 Adafruit_BNO055 bno = Adafruit_BNO055(55,0x29,&Wire);
-sensors_event_t orientationData;
+sensors_event_t orientationData, linearAccelData;
+double ACCEL_VEL_TRANSITION =  (double)(BNO055_SAMPLERATE_DELAY_MS) / 10.0;
+double ACCEL_POS_TRANSITION = 0.5 * ACCEL_VEL_TRANSITION * ACCEL_VEL_TRANSITION;
+double DEG_2_RAD = 0.01745329251; //trig functions require radians, BNO055 outputs degrees
+double vx = 0, vy = 0, xPos = 0, yPos = 0, headingVel = 0, ax, ay, az;
 
 #define SERIAL_HEAD   '{'
 #define SERIAL_TAIL   '}'
@@ -45,7 +49,7 @@ unsigned long now = 0;
 #define MOTOR_3_A_PIN 7
 #define MOTOR_3_B_PIN 8
 
-double motorPwm1 = 0.0, motorPwm2=0.0, motorPwm3=0.0;
+double motorPwm[3] = {0.0, 0.0, 0.0};
 
 #define IR_BACK_PIN  25
 #define IR_RIGHT_PIN 27 
@@ -68,12 +72,15 @@ bool velocityAndPositionUpdated;
 #define CIRCUMFERENCE 31.4159265
 #define CPR 4096.0
 #define DIST_PER_COUNT 0.0076699025 //  from calculating
-// #define DIST_PER_COUNT 0.007428623 // from calibrating
 
-double wheelVelocity1_Real = 0.0, wheelVelocity1_Target = 0.0, wheelVelocity1_Error = 0.0, wheelVelocity1_Prev_Error = 0.0, wheelVelocity1_Error_Sum = 0.0, wheelVelocity1_Prev_Target = 0.0, wheelAcc1 = 0.0;
-double wheelVelocity2_Real = 0.0, wheelVelocity2_Target = 0.0, wheelVelocity2_Error = 0.0, wheelVelocity2_Prev_Error = 0.0, wheelVelocity2_Error_Sum = 0.0, wheelVelocity2_Prev_Target = 0.0, wheelAcc2 = 0.0;
-double wheelVelocity3_Real = 0.0, wheelVelocity3_Target = 0.0, wheelVelocity3_Error = 0.0, wheelVelocity3_Prev_Error = 0.0, wheelVelocity3_Error_Sum = 0.0, wheelVelocity3_Prev_Target = 0.0, wheelAcc3 = 0.0;
-
+double wheelVelocity_Real[3] = {0.0, 0.0, 0.0};
+double wheelVelocity_Real_50[3] = {0.0, 0.0, 0.0};
+double wheelVelocity_Target[3] = {0.0, 0.0, 0.0};
+double wheelVelocity_Error[3] = {0.0, 0.0, 0.0};
+double wheelVelocity_Prev_Error[3] = {0.0, 0.0, 0.0};
+double wheelVelocity_Error_Sum[3] = {0.0, 0.0, 0.0};
+double wheelVelocity_Prev_Target[3] = {0.0, 0.0, 0.0};
+double wheelAcc[3] = {0.0, 0.0, 0.0};
 
 /* Max robot speed in cm/s */
 #define MAX_ROBOT_SPEED 60
@@ -105,7 +112,7 @@ void setup()
   Serial.begin(115200);
   Serial.setTimeout(100);
 
-  getThetaBNO055Deg();
+  getBNO055Data();
 }
 
 
